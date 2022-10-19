@@ -3,6 +3,6 @@ import react from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/grades_portal',
+  // base: '/grades_portal',
   plugins: [react()]
 })

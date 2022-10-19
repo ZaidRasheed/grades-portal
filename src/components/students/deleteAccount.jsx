@@ -27,7 +27,7 @@ export default function UpdateEmail(props) {
                         if (res.state === 'success') {
                             try {
                                 deleteAccount()
-                                navigate('/grades_portal');
+                                navigate('/');
                             }
                             catch (e) {
                                 setError("An error occurred while deleting account")

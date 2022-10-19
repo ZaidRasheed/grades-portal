@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react'
 import { Form, Button, Alert, Modal } from 'react-bootstrap'
 import { UserAuth } from './context/AuthContext'
-
+import { Link } from 'react-router-dom'
 
 export default function UpdatePassword(props) {
 
@@ -93,6 +93,9 @@ export default function UpdatePassword(props) {
                         </Form.Group>
                         <Button disabled={loading} className='w-100 mt-3 mb-3' type='submit'> Submit</Button>
                     </Form>
+                </div>
+                <div className="w-100 text-center mt-2">
+                    Forgot password? <Link to='/resetPassword'>Reset</Link>
                 </div>
             </Modal.Body>
         </Modal>

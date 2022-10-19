@@ -28,7 +28,7 @@ function App() {
       <AuthContextProvider>
         <Routes>
           <Route element={<PublicRoutes />}>
-            <Route element={<Home />} path="/grades_portal" exact />
+            <Route element={<Home />} path="/" exact />
             <Route element={<LoginStudents />} path="/student-login" exact />
             <Route element={<LoginTeacher />} path="/teacher-login" exact />
             <Route element={<Signup />} path="/signup" exact />
@@ -51,12 +51,6 @@ function App() {
                 </TeacherRoutes>
               }
             />
-            {/* <Route element={<StudentRoutes />}>
-              <Route element={<StudentProfile />} path="/student-profile" exact />
-            </Route>
-            <Route element={<TeacherRoutes />}>
-              <Route element={<TeacherProfile />} path="/teacher-profile" exact />
-            </Route> */}
           </Route>
           <Route element={<ResetPassword />} path="/resetPassword" exact />
           <Route path="*" element={<Error />} />

@@ -13,7 +13,7 @@ export default function Error() {
                     <h1 className='display-5'>Error</h1>
                 </div>
                 <div className="w-100 text-center mt-2">
-                    <Link to='/grades_portal'>Go Back?</Link>
+                    <Link to='/'>Go Back?</Link>
                 </div>
             </div>
         </Container>
