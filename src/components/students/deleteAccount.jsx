@@ -27,7 +27,7 @@ export default function UpdateEmail(props) {
                         if (res.state === 'success') {
                             try {
                                 deleteAccount()
-                                navigate('/');
+                                navigate('/grades_portal');
                             }
                             catch (e) {
                                 setError("An error occurred while deleting account")
@@ -39,11 +39,10 @@ export default function UpdateEmail(props) {
                         }
                     })
                     .catch(error => {
-                        console.log(error)
+                        setError("An error occurred while deleting account")
                     })
             }
             catch (e2) {
-                console.log('habal')
                 setLoading(false);
             }
         }

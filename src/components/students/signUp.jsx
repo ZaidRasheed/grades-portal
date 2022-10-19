@@ -34,8 +34,6 @@ export default function Signup() {
                         id: userCredential.user.uid
                     }
                     await addStudent(student, userCredential.user.uid)
-                    console.log('added to db')
-                    console.log('account created')
                     navigate('/student-profile')
                 }
                 catch (e) {
@@ -61,7 +59,6 @@ export default function Signup() {
                         break;
                     }
                     default: {
-                        console.log(error.code)
                         setError('Failed to create an account')
                     }
                         setLoading(false);

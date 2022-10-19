@@ -52,7 +52,7 @@ export default function TeacherProfile() {
             getTeacherData(currentUser.uid)
                 .then((data => {
                     if (data.error) {
-                        console.log(data.error)
+                        console.log('Error in fetching teacher data');
                     }
                     else {
                         setTeacher(data)
@@ -94,7 +94,7 @@ export default function TeacherProfile() {
             <div style={{ maxWidth: "900px", margin: '0 auto' }} className='d-flex flex-row-reverse' >
                 <Button className=' text-center mb-1 btn-lg mt-2' variant="outline-primary" onClick={() => {
                     logOut();
-                    navigate('/')
+                    navigate('/grades_portal')
                 }}>Log out</Button>
             </div>
 

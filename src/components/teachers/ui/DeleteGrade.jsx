@@ -141,7 +141,6 @@ export default function DeleteGrade(props) {
                 })
                 .catch(e => {
                     setError("Error, Couldn't Delete Student Grade")
-                    console.log(e)
                 })
                 .finally(() => {
                     props.refreshStudentData();
@@ -153,8 +152,8 @@ export default function DeleteGrade(props) {
         setModalError('')
         setModalSuccess('')
         setModalLoading(true)
-        // console.log(currentMarkRef.current, currentNameRef.current, currentTotalRef.current)
-        // console.log(newMarkRef.current.value, newNameRef.current.value, newTotalRef.current.value)
+
+
         let newGrade = {
             name: currentNameRef.current,
             mark: +currentMarkRef.current,
@@ -236,7 +235,6 @@ export default function DeleteGrade(props) {
             })
             .catch(e => {
                 setModalError("Error, Couldn't Update Grade Grade")
-                console.log(e)
             })
             .finally(() => {
                 props.refreshStudentData();

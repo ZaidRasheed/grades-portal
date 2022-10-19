@@ -131,7 +131,7 @@ export default function StudentProfile() {
                 <div className="w-100 mt-3">
                     <Button variant="outline-primary" className='text-center mb-4 btn-lg mt-3' onClick={() => {
                         logOut();
-                        navigate('/')
+                        navigate('/grades_portal')
                     }}>Log out</Button>
                 </div>
             </div>

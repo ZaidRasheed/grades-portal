@@ -160,7 +160,6 @@ export const AuthContextProvider = ({ children }) => {
                     snapshot.docs.forEach(doc => {
                         studentsEmails.push(doc.data().email)
                     })
-                    // console.log(studentsEmails)
                     resolve(studentsEmails)
                 })
                 .catch(err => {
