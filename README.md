@@ -40,7 +40,7 @@
         + A teacher can't delete students.
         + A teacher can't create new students
 <br><br>
-#### - The following firestore rules ensure following in order:
+### - The following firestore rules ensure following in order:
 1. Teachers data cannot be changed nor deleted.
 2. Teachers data can ONLY be read by the teacher himself.
 3. A student can ONLY read his own data, teachers can read all students data.
@@ -86,12 +86,4 @@
 
 
 ---
-
-<div style="display:inline-block;">
-	<img  height="60" src="https://user-images.githubusercontent.com/25181517/117448085-96eed600-af3e-11eb-9492-83a3a0fcbfb1.png" alt="React" title="React" />
-</div>
-<div style="display:inline-block;">
-	<img  height="60" src="https://cdn.freebiesupply.com/logos/large/2x/firebase-1-logo-png-transparent.png" alt="React" title="React" />
-</div>
-
-You can view the project live [here](https://zaidrasheed.github.io/grades_portal/)
+## You can view the project live [here](https://zaidrasheed.github.io/grades_portal/)
