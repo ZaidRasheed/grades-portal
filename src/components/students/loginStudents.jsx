@@ -107,7 +107,7 @@ export default function Login() {
                     Forgot password? <Link to='/resetPassword'>Reset</Link>
                 </div>
                 <div className="w-100 text-center mt-2">
-                    Go back? <Link to='/'>Home</Link>
+                    Go back? <Link to='/grades_portal'>Home</Link>
                 </div>
             </div>
         </Container>
