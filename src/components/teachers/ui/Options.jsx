@@ -1,42 +1,44 @@
+import { useState } from 'react';
 import { Button } from 'react-bootstrap';
-import AddMark from './AddMark';
+import AddGrade from './AddGrade.jsx';
 import StudentsList from './StudentsList.jsx';
 import Data from './Data.jsx';
-import DeleteMark from './DeleteMark.jsx';
+import DeleteGrade from './DeleteGrade.jsx';
 export default function Options(props) {
+    const [propertiesShown, setPropertiesShown] = useState('students list')
     return (
         <>
             <ul className="nav nav-pills mb-3 mt-5" id="pills-tab" role="tablist">
                 <li className="nav-item" role="presentation">
                     <button
                         onClick={() => {
-                            props.setPropertiesShown('students list')
+                            setPropertiesShown('students list')
                         }}
-                        className={`nav-link ${props.propertiesShown === 'students list' ? 'active' : ''}`}
+                        className={`nav-link ${propertiesShown === 'students list' ? 'active' : ''}`}
                     >Students</button>
                 </li>
                 <li className="nav-item" role="presentation">
                     <button
                         onClick={() => {
-                            props.setPropertiesShown('add grade')
+                            setPropertiesShown('add grade')
                         }}
-                        className={`nav-link ${props.propertiesShown === 'add grade' ? 'active' : ''}`}
+                        className={`nav-link ${propertiesShown === 'add grade' ? 'active' : ''}`}
                     >Add Grade</button>
                 </li>
                 <li className="nav-item" role="presentation">
                     <button
                         onClick={() => {
-                            props.setPropertiesShown('delete mark')
+                            setPropertiesShown('delete grade')
                         }}
-                        className={`nav-link ${props.propertiesShown === 'delete mark' ? 'active' : ''}`}
-                    >Delete Mark</button>
+                        className={`nav-link ${propertiesShown === 'delete grade' ? 'active' : ''}`}
+                    >Delete & Edit Grade</button>
                 </li>
                 <li className="nav-item" role="presentation">
                     <button
                         onClick={() => {
-                            props.setPropertiesShown('data')
+                            setPropertiesShown('data')
                         }}
-                        className={`nav-link ${props.propertiesShown === 'data' ? 'active' : ''}`}
+                        className={`nav-link ${propertiesShown === 'data' ? 'active' : ''}`}
                     >Data</button>
                 </li>
             </ul>
@@ -50,8 +52,8 @@ export default function Options(props) {
                 {props.refreshLoading ? <div className="spinner-border spinner-border text-primary" style={{ width: '1.5rem', height: '1.5rem' }} role="status"></div> : 'Refresh'}
             </Button>
 
-            <div className="tab-content " style={{ minHeight:'400px' }} id="pills-tabContent">
-                {props.propertiesShown === 'students list' && <div >
+            <div className="tab-content " style={{ minHeight: '400px' }} id="pills-tabContent">
+                {propertiesShown === 'students list' && <div >
                     {props.students.length > 0 ?
                         <StudentsList
                             students={props.students}
@@ -59,9 +61,9 @@ export default function Options(props) {
                         : <h1 className='text-center text-danger'>No Students</h1>
                     }
                 </div>}
-                {props.propertiesShown === 'add grade' && <div >
+                {propertiesShown === 'add grade' && <div >
                     {props.students.length > 0 ?
-                        <AddMark
+                        <AddGrade
                             students={props.students}
                             studentEmails={props.studentEmails}
                             currentUser={props.currentUser}
@@ -71,17 +73,17 @@ export default function Options(props) {
                         : <h1 className='text-center text-danger'>No Students</h1>
                     }
                 </div>}
-                {props.propertiesShown === 'data' && <div >
+                {propertiesShown === 'data' && <div >
                     {props.students.length > 0 ?
-                        <Data 
+                        <Data
                             students={props.students}
                         />
                         : <h1 className='text-center text-danger'>No Students</h1>
                     }
                 </div>}
-                {props.propertiesShown === 'delete mark' && <div >
+                {propertiesShown === 'delete grade' && <div >
                     {props.students.length > 0 ?
-                        <DeleteMark
+                        <DeleteGrade
                             students={props.students}
                             studentEmails={props.studentEmails}
                             currentUser={props.currentUser}

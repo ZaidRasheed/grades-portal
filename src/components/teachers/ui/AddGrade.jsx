@@ -2,18 +2,22 @@ import { Row, Col, Form, Button, Card, Alert, InputGroup } from 'react-bootstrap
 import { useState, useRef } from 'react'
 import { UserAuth } from '../../context/AuthContext.jsx';
 
-export default function AddMark(props) {
+export default function AddGrade(props) {
 
     const emailRef = useRef()
-    const assignmentRef = useRef()
+    const gradeRef = useRef()
     const markRef = useRef()
-    const outOfRef = useRef()
+    const totalRef = useRef()
 
     const [error, setError] = useState('')
     const [success, setSuccess] = useState('')
     const [loading, setLoading] = useState(false);
 
-    const { addNewMark } = UserAuth()
+    const { addNewGrade } = UserAuth()
+
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
 
     const handleSubmit = (e) => {
 
@@ -22,7 +26,7 @@ export default function AddMark(props) {
         setSuccess('')
         setLoading(true)
 
-        if (!assignmentRef.current.value.length) {
+        if (!gradeRef.current.value.length) {
             setLoading(false)
             return setError('Assignment name invalid, please provide a name.')
         }
@@ -42,32 +46,30 @@ export default function AddMark(props) {
             return setError('Invalid, Marks cant be negative.')
         }
 
-        if (outOfRef.current.value < 1) {
+        if (totalRef.current.value < 1) {
             setLoading(false)
             return setError('Invalid, Marks should be at least out of 1.')
         }
 
-        if (parseInt(markRef.current.value) > parseInt(outOfRef.current.value)) {
+        if (parseInt(markRef.current.value) > parseInt(totalRef.current.value)) {
             setLoading(false)
             return setError('Invalid, Mark cant be greater than 100%.')
         }
 
-        const data = {
-            studentEmail: emailRef.current.value,
-            mark: {
-                assignment: assignmentRef.current.value.trim(),
-                mark: `${markRef.current.value}/${outOfRef.current.value}`.trim(),
-                percentage: (parseInt(markRef.current.value) / parseInt(outOfRef.current.value) * 100).toFixed(2).trim()
-            }
+        const mark = {
+            name: capitalizeFirstLetter(gradeRef.current.value.trim()),
+            mark: +markRef.current.value,
+            total: +totalRef.current.value,
+            percentage: +((parseInt(markRef.current.value) / parseInt(totalRef.current.value) * 100).toFixed(2))
         }
 
-        addNewMark(data.studentEmail, data.mark)
+        addNewGrade(emailRef.current.value, mark)
             .then(() => {
-                setSuccess('Mark Added Successfully')
+                setSuccess('Grade Added Successfully')
                 props.refreshStudentData()
             })
             .catch(() => {
-                setError("Mark Couldn't be added")
+                setError("Grade Couldn't be added")
             })
             .finally(() => {
                 setLoading(false);
@@ -96,25 +98,25 @@ export default function AddMark(props) {
                         </InputGroup>
                     </Form.Group>
                     <Form.Group className='mb-4' style={{ maxWidth: '700px' }}>
-                        <Form.Label>Assignment Name*</Form.Label>
+                        <Form.Label>Grade Name*</Form.Label>
                         <Form.Control
                             type='string'
-                            placeholder="Assignment Name"
-                            aria-label="Assignment Name"
-                            ref={assignmentRef}
+                            placeholder="Grade Name"
+                            aria-label="Grade Name"
+                            ref={gradeRef}
                             required />
                     </Form.Group>
                     <Row>
                         <Col lg={3} md={3} sm={4} xs={6}>
                             <Form.Group className='mb-4' style={{ maxWidth: '90px' }}>
-                                <Form.Label>Mark*</Form.Label>
+                                <Form.Label>Grade*</Form.Label>
                                 <Form.Control type='number' ref={markRef} placeholder="ex:3" required />
                             </Form.Group>
                         </Col>
                         <Col lg={3} md={3} sm={4} xs={6}>
                             <Form.Group className='mb-4' style={{ maxWidth: '90px' }}>
-                                <Form.Label>Out of/ *</Form.Label>
-                                <Form.Control type='number' placeholder="ex:10" ref={outOfRef} required />
+                                <Form.Label>/Total *</Form.Label>
+                                <Form.Control type='number' placeholder="ex:10" ref={totalRef} required />
                             </Form.Group>
                         </Col>
                     </Row>

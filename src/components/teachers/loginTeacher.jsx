@@ -27,10 +27,10 @@ export default function Login() {
             return setError('Invalid Password');
         }
 
-        if (!await checkIfTeacher(emailRef.current.value)) {
-            setLoading(false);
-            return setError('Not a teacher')
-        }
+        // if (!await checkIfTeacher(emailRef.current.value)) {
+        //     setLoading(false);
+        //     return setError('Not a teacher')
+        // }
 
         try {
             await logIn(emailRef.current.value.trim(), passwordRef.current.value.trim());

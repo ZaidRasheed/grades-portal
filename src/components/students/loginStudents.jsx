@@ -26,10 +26,10 @@ export default function Login() {
             return setError('Invalid Password');
         }
 
-        if (!await checkIfStudent(emailRef.current.value)) {
-            setLoading(false);
-            return setError('Not a Student')
-        }
+        // if (!await checkIfStudent(emailRef.current.value)) {
+        //     setLoading(false);
+        //     return setError('Not a Student')
+        // }
         else {
             try {
                 await logIn(emailRef.current.value.trim(), passwordRef.current.value.trim());

@@ -12,17 +12,15 @@ import ResetPassword from "./resetPassword.jsx";
 import Error from "./error.jsx";
 
 
-// import StudentRoutes from './students/studentRoutes.jsx';
 import Signup from "./students/signUp.jsx";
 import LoginStudents from "./students/loginStudents.jsx";
 import StudentProfile from "./students/studentProfile.jsx";
 
-// import TeacherRoutes from './teachers/teacherRoutes.jsx';
 import LoginTeacher from './teachers/loginTeacher.jsx'
 import TeacherProfile from './teachers/teacherProfile.jsx';
 
-import Teachers from './AuthorizedTeacher.jsx';
-import Students from './AuthorizedStudents.jsx'
+import TeacherRoutes from './teachers/TeachersRoutes.jsx';
+import StudentRoutes from './students/StudentsRoutes.jsx'
 
 function App() {
   return (
@@ -40,17 +38,17 @@ function App() {
             <Route
               path='/student-profile'
               element={
-                <Students>
+                <StudentRoutes>
                   <StudentProfile />
-                </Students>
+                </StudentRoutes>
               }
             />
             <Route
               path='/teacher-profile'
               element={
-                <Teachers>
+                <TeacherRoutes>
                   <TeacherProfile />
-                </Teachers>
+                </TeacherRoutes>
               }
             />
             {/* <Route element={<StudentRoutes />}>

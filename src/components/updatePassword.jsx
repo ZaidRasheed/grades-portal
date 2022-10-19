@@ -96,7 +96,6 @@ export default function UpdatePassword(props) {
                 </div>
             </Modal.Body>
         </Modal>
-
     )
 }
 

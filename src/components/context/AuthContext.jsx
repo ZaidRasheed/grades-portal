@@ -104,7 +104,7 @@ export const AuthContextProvider = ({ children }) => {
                 })
         })
     }
-    
+
     function addStudent(student, id) {
         const docRef = doc(db, 'students', id);
         return new Promise((resolve, reject) => {
@@ -183,9 +183,9 @@ export const AuthContextProvider = ({ children }) => {
     }
 
     function getTeacherData(teachersId) {
-        const docRef = doc(db, 'teachers', teachersId);
+        const teacherRef = doc(db, 'teachers', teachersId);
         return new Promise((resolve, reject) => {
-            getDoc(docRef)
+            getDoc(teacherRef)
                 .then(res => {
                     if (res.exists())
                         return resolve(res.data());
@@ -198,10 +198,11 @@ export const AuthContextProvider = ({ children }) => {
         })
     }
 
-    async function checkIfTeacher(email) {
+    async function checkIfTeacher(id) {
+        const teacherRef = doc(db, 'teachers', id);
         try {
-            const teachersEmails = await getAllTeachersEmails();
-            if (teachersEmails.includes(email)) {
+            const teacher = await getDoc(teacherRef)
+            if (teacher.exists()) {
                 return true;
             }
             return false
@@ -210,6 +211,7 @@ export const AuthContextProvider = ({ children }) => {
             return false
         }
     }
+
     async function checkIfStudent(email) {
         try {
             const studentEmails = await getAllStudentsEmails();
@@ -223,7 +225,7 @@ export const AuthContextProvider = ({ children }) => {
         }
     }
 
-    async function addNewMark(studentEmail, newMark) {
+    async function addNewGrade(studentEmail, newGrade) {
         const q = query(collection(db, "students"), where("email", "==", studentEmail));
         const querySnapshot = await getDocs(q);
         let id = null
@@ -233,7 +235,7 @@ export const AuthContextProvider = ({ children }) => {
         });
         const docRef = doc(db, 'students', id);
         return new Promise((resolve, reject) => {
-            updateDoc(docRef, { marks: arrayUnion(newMark) })
+            updateDoc(docRef, { grades: arrayUnion(newGrade) })
                 .then(res => {
                     resolve({ state: 'success' });
                 })
@@ -243,15 +245,45 @@ export const AuthContextProvider = ({ children }) => {
         })
     }
 
-    async function deleteMark(studentID, markName) {
+    async function deleteGrade(studentID, gradeName) {
         const docRef = doc(db, 'students', studentID);
         try {
             const student = await getStudentData(studentID)
             const newData = {
                 email: student.data().email,
                 name: student.data().name,
-                marks: student.data().marks.filter(mark => {
-                    return mark.assignment !== markName
+                grades: student.data().grades.filter(grade => {
+                    return grade.name !== gradeName
+                }),
+                id: studentID
+            }
+            return new Promise((resolve, reject) => {
+                return new setDoc(docRef, newData)
+                    .then(res => {
+                        resolve({ state: 'success' });
+                    })
+                    .catch(err => {
+                        reject(err)
+                    })
+            })
+        }
+        catch (e) {
+            return { error: e };
+        }
+    }
+
+    async function editGrade(studentID, gradeName, updatedGrade) {
+        const docRef = doc(db, 'students', studentID);
+        try {
+            const student = await getStudentData(studentID)
+            const newData = {
+                email: student.data().email,
+                name: student.data().name,
+                grades: student.data().grades.map(grade => {
+                    if (grade.name === gradeName) {
+                        return updatedGrade
+                    }
+                    return grade
                 }),
                 id: studentID
             }
@@ -293,8 +325,9 @@ export const AuthContextProvider = ({ children }) => {
             deleteStudent,
             checkIfStudent,
             checkIfTeacher,
-            addNewMark,
-            deleteMark,
+            addNewGrade,
+            deleteGrade,
+            editGrade
 
         }}>
             {!loading && children}

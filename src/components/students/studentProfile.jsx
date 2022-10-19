@@ -59,7 +59,7 @@ export default function StudentProfile() {
                 .then((student) => {
                     if (student.exists()) {
                         setUserName(student.data().name)
-                        setGrades(student.data().marks)
+                        setGrades(student.data().grades)
                     }
                 })
                 .catch((error) => {
@@ -92,17 +92,17 @@ export default function StudentProfile() {
                         <thead className='table-dark'>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Assignment</th>
-                                <th scope="col">Mark</th>
+                                <th scope="col">Grade Name</th>
+                                <th scope="col">Grade</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {grades.map((e, i) => {
+                            {grades.map((grade, i) => {
                                 return (
                                     <tr key={i}>
                                         <th scope="row">{i + 1}</th>
-                                        <td>{e.assignment}</td>
-                                        <td>{e.mark}</td>
+                                        <td>{grade.name}</td>
+                                        <td>{grade.mark}/{grade.total}</td>
                                     </tr>)
                             })}
                         </tbody>

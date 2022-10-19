@@ -16,7 +16,6 @@ export default function TeacherProfile() {
     const [email, setEmail] = useState('');
     const [students, setStudents] = useState([]);
 
-    const [propertiesShown, setPropertiesShown] = useState('students list')
 
     const [studentEmails, setStudentEmails] = useState([])
 
@@ -101,13 +100,10 @@ export default function TeacherProfile() {
 
             <Container className="d-flex align-items-center justify-content-center">
                 <div className="w-100" style={{ maxWidth: "900px" }}>
-                    {teacher?.name ? <h1 className=' mb-4'>Hello {teacher?.gender === 'male' ? 'Mr' : 'Mrs'} {teacher.name}</h1> : null}
+                    {teacher?.name ? <h1 className=' mb-4'>Hello {teacher?.gender.toLowerCase() === 'male' ? 'Mr' : 'Mrs'} {teacher.name}</h1> : null}
                     <h4 className=' mb-4'>Email: {email}</h4>
 
                     <Options
-                        propertiesShown={propertiesShown}
-                        setPropertiesShown={setPropertiesShown}
-
                         refreshStudentData={refreshStudentData}
                         refreshLoading={refreshLoading}
 

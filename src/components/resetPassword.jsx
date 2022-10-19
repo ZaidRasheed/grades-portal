@@ -16,10 +16,15 @@ export default function ResetPassword() {
     async function handleSubmit(event) {
 
         event.preventDefault();
+        setLoading(true);
+
+        if(emailRef.current.value.length<4){
+            setLoading(false);
+            return setError('Invalid email')
+        }
 
         try {
             setError('')
-            setLoading(true);
             await sendResetPasswordLink(emailRef.current.value);
             setSuccess("Email sent please check inbox")
         }

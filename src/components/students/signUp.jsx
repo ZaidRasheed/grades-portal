@@ -29,7 +29,7 @@ export default function Signup() {
                 try {
                     const student = {
                         name: fullName,
-                        marks: [],
+                        grades: [],
                         email: emailRef.current.value.trim(),
                         id: userCredential.user.uid
                     }

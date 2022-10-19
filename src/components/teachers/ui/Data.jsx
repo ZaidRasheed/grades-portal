@@ -3,7 +3,7 @@ import { Row, Col, Form, Button, Card, Alert, Dropdown, DropdownButton, InputGro
 
 export default function Data(props) {
     const [email, setEmail] = useState('')
-    const [option, setOption] = useState('')
+    const [option, setOption] = useState('All Grades')
     const [result, setResult] = useState([])
 
     const [data, setData] = useState({
@@ -25,10 +25,10 @@ export default function Data(props) {
     }
 
     function getHighestMark(student) {
-        if (student.marks.length) {
-            let highest = student.marks[0].percentage
-            let grade
-            student.marks.forEach(mark => {
+        if (student.grades.length) {
+            let highest = student.grades[0].percentage
+            let grade = student.grades[0]
+            student.grades.forEach(mark => {
                 if (mark.percentage > highest) {
                     highest = mark.percentage
                     grade = mark
@@ -39,10 +39,10 @@ export default function Data(props) {
     }
 
     function getLowestMark(student) {
-        if (student.marks.length) {
-            let lowest = student.marks[0].percentage
-            let grade
-            student.marks.forEach(mark => {
+        if (student.grades.length) {
+            let lowest = student.grades[0].percentage
+            let grade = student.grades[0]
+            student.grades.forEach(mark => {
                 if (mark.percentage < lowest) {
                     lowest = mark.percentage
                     grade = mark
@@ -53,11 +53,11 @@ export default function Data(props) {
     }
 
     function allPassed(student) {
-        if (student.marks.length) {
+        if (student.grades.length) {
             let lowest = 50
             let grades = []
-            student.marks.forEach(mark => {
-                if (mark.percentage > lowest) {
+            student.grades.forEach(mark => {
+                if (mark.percentage >= lowest) {
                     grades.push(mark)
                 }
             })
@@ -66,10 +66,10 @@ export default function Data(props) {
     }
 
     function allFailed(student) {
-        if (student.marks.length) {
+        if (student.grades.length) {
             let lowest = 50
             let grades = []
-            student.marks.forEach(mark => {
+            student.grades.forEach(mark => {
                 if (mark.percentage < lowest) {
                     grades.push(mark)
                 }
@@ -97,9 +97,9 @@ export default function Data(props) {
                     return setError('No student found.')
                 }
 
-                if (student?.marks?.length === 0) {
+                if (student?.grades?.length === 0) {
                     setLoading(false)
-                    return setError("Student Doesn't have any marks yet")
+                    return setError("Student Doesn't have any grades yet")
                 }
 
                 setData(() => {
@@ -127,7 +127,7 @@ export default function Data(props) {
                         break;
                     }
                     case 'All Grades': {
-                        setResult([...student.marks])
+                        setResult([...student.grades])
                         break;
                     }
                     default: {
@@ -209,19 +209,19 @@ export default function Data(props) {
                             <thead className='table-dark'>
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Assignment </th>
-                                    <th scope="col">Mark</th>
+                                    <th scope="col">Grade Name</th>
+                                    <th scope="col">Grade</th>
                                     <th className='text-center' scope="col">Percentage</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {result.map((mark, i) => {
+                                {result.map((assignment, i) => {
                                     return (
                                         <tr key={i}>
                                             <td>{i + 1}</td>
-                                            <th scope="row">{mark.assignment}</th>
-                                            <td>{mark.mark}</td>
-                                            <td className='text-center'>{mark.percentage}%</td>
+                                            <th scope="row">{assignment.name}</th>
+                                            <td>{assignment.mark}/{assignment.total}</td>
+                                            <td className='text-center'>{assignment.percentage}%</td>
                                         </tr>
                                     )
                                 })}
