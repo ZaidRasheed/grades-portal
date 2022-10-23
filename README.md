@@ -23,7 +23,7 @@
 ## Description and Approach 
 
 - There are two collections in the database one for students and another for teachers.<br><br>
-- Whenever a user (student) is created a new student document is created in the database which has the same id, the structure of a student object is as follow: 
+- Whenever a user (student) is created a new student document is created in the database which has the same document id as the user from firebase authentication, the structure of a student object is as follow: 
 ```
 {
   name: string
