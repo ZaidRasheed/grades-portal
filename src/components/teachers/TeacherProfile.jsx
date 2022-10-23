@@ -94,7 +94,7 @@ export default function TeacherProfile() {
             <div style={{ maxWidth: "900px", margin: '0 auto' }} className='d-flex flex-row-reverse' >
                 <Button className=' text-center mb-1 btn-lg mt-2' variant="outline-primary" onClick={() => {
                     logOut();
-                    navigate('/grades_portal')
+                    navigate('/')
                 }}>Log out</Button>
             </div>
 
