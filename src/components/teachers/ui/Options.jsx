@@ -3,7 +3,7 @@ import { Button } from 'react-bootstrap';
 import AddGrade from './AddGrade.jsx';
 import StudentsList from './StudentsList.jsx';
 import Data from './Data.jsx';
-import DeleteGrade from './DeleteGrade.jsx';
+import DeleteGrade from './DeleteEditGrade.jsx';
 export default function Options(props) {
     const [propertiesShown, setPropertiesShown] = useState('students list')
     return (
@@ -46,10 +46,13 @@ export default function Options(props) {
             <Button
                 variant='outline-primary'
                 className='mb-4 mt-4'
-                onClick={props.refreshStudentData}
+                onClick={() => {
+                    props.setRefreshSpinner(true)
+                    props.refreshStudentData();
+                }}
                 disabled={props.refreshLoading}
             >
-                {props.refreshLoading ? <div className="spinner-border spinner-border text-primary" style={{ width: '1.5rem', height: '1.5rem' }} role="status"></div> : 'Refresh'}
+                {props.refreshSpinner ? <div className="spinner-border spinner-border text-primary" style={{ width: '1.5rem', height: '1.5rem' }} role="status"></div> : 'Refresh'}
             </Button>
 
             <div className="tab-content " style={{ minHeight: '400px' }} id="pills-tabContent">

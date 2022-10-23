@@ -157,7 +157,7 @@ export default function Data(props) {
         <Card className='p-2 '>
             <Card.Body>
                 <h2 className='text-center mb-4'>Search</h2>
-                {error && <Alert variant='danger'>{error}</Alert>}
+                {error && <Alert variant='danger' onClose={() => setError('')} dismissible>{error}</Alert>}
                 <div style={{ maxWidth: '700px', marginBottom: '60px' }}>
                     <Button
                         onClick={resetData}

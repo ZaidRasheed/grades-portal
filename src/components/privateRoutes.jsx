@@ -5,7 +5,7 @@ export default function PrivateRoutes() {
     
     const { currentUser } = UserAuth()
     return (
-        currentUser === null ? <Navigate to='/' /> : <Outlet />
+        currentUser === null ? <Navigate to='/grades_portal' /> : <Outlet />
     )
 }
 

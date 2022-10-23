@@ -43,8 +43,8 @@ export default function ResetPassword() {
                 <Card className='p-2'>
                     <Card.Body>
                         <h2 className='text-center mb-4'>Reset Password</h2>
-                        {error && <Alert variant='danger'>{error}</Alert>}
-                        {success && <Alert variant='success'>{success}</Alert>}
+                        {error && <Alert variant='danger' onClose={() => setError('')} dismissible>{error}</Alert>}
+                        {success && <Alert variant='success' onClose={() => setSuccess('')} dismissible>{success}</Alert>}
                         <Form onSubmit={handleSubmit}>
                             <Form.Group className='mb-3'>
                                 <Form.Label>Email</Form.Label>
@@ -56,7 +56,7 @@ export default function ResetPassword() {
                     </Card.Body>
                 </Card>
                 <div className="w-100 text-center mt-2">
-                    <Link to='/'>Go back?</Link>
+                    <Link to='/grades_portal'>Go back?</Link>
                 </div>
             </div>
         </Container>

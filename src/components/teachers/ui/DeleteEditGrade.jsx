@@ -1,7 +1,7 @@
 import { Row, Col, Form, Button, Card, Alert, InputGroup, Modal } from 'react-bootstrap'
 import { useState, useRef, useEffect } from 'react'
 import { UserAuth } from '../../context/AuthContext'
-export default function DeleteGrade(props) {
+export default function DeleteEditGrade(props) {
 
     const emailRef = useRef()
     const assignmentRef = useRef()
@@ -134,7 +134,7 @@ export default function DeleteGrade(props) {
             deleteGrade(student.id, gradeName)
                 .then((data) => {
                     if (data?.state === 'success') {
-                        setSuccess("Grade Deleted Successfully")
+                        setSuccess(`Grade "${gradeName}" Deleted Successfully`)
                     }
                     else
                         setError("Error, Couldn't Delete Student Grade")
@@ -249,8 +249,8 @@ export default function DeleteGrade(props) {
                 </Modal.Header>
                 <Modal.Body>
                     <div className="w-100">
-                        {modalError && <Alert variant='danger'>{modalError}</Alert>}
-                        {modalSuccess && <Alert variant='success'>{modalSuccess}</Alert>}
+                        {modalError && <Alert variant='danger' onClose={() => setModalError('')} dismissible>{modalError}</Alert>}
+                        {modalSuccess && <Alert variant='success' onClose={() => setModalSuccess('')} dismissible>{modalSuccess}</Alert>}
                         <Form onSubmit={handleEditGrade}>
                             <h1>{currentNameRef.current} Grade for :</h1>
                             <p className='display-6'><i> {student?.name}</i></p>
@@ -275,8 +275,8 @@ export default function DeleteGrade(props) {
             </Modal>
             <Card.Body>
                 <h2 className='text-center mb-4'>Delete and Edit Grades</h2>
-                {success && <Alert variant='success'>{success}</Alert>}
-                {error && <Alert variant='danger'>{error}</Alert>}
+                {success && <Alert variant='success' onClose={() => setSuccess('')} dismissible>{success}</Alert>}
+                {error && <Alert variant='danger' onClose={() => setError('')} dismissible>{error}</Alert>}
                 <Form onSubmit={handleSubmit}>
                     <h4 className='mb-3'>Search</h4>
                     <Row>

@@ -76,8 +76,8 @@ export default function UpdatePassword(props) {
             </Modal.Header>
             <Modal.Body>
                 <div className="w-100">
-                    {error && <Alert variant='danger'>{error}</Alert>}
-                    {success && <Alert variant='success'>{success}</Alert>}
+                    {error && <Alert variant='danger' onClose={() => setError('')} dismissible>{error}</Alert>}
+                    {success && <Alert variant='success' onClose={() => setSuccess('')} dismissible>{success}</Alert>}
                     <Form onSubmit={handleSubmit}>
                         <Form.Group className='mb-3'>
                             <Form.Label>Old Password</Form.Label>

@@ -3,13 +3,13 @@ import { AuthContextProvider } from "./context/AuthContext";
 
 import { Routes, Route } from 'react-router-dom'
 
-import Home from './home.jsx';
+import Home from './Home.jsx';
 
 import PrivateRoutes from "./privateRoutes.jsx";
 import PublicRoutes from "./publicRoutes.jsx";
 
-import ResetPassword from "./resetPassword.jsx";
-import Error from "./error.jsx";
+import ResetPassword from "./ResetPassword.jsx";
+import Error from "./Error.jsx";
 
 
 import Signup from "./students/signUp.jsx";
@@ -28,11 +28,10 @@ function App() {
       <AuthContextProvider>
         <Routes>
           <Route element={<PublicRoutes />}>
-            <Route element={<Home />} path="/" exact />
+            <Route element={<Home />} path="/grades_portal" exact />
             <Route element={<LoginStudents />} path="/student-login" exact />
             <Route element={<LoginTeacher />} path="/teacher-login" exact />
             <Route element={<Signup />} path="/signup" exact />
-            {/* <Route element={<ResetPassword />} path="/resetPassword" exact /> */}
           </Route>
           <Route element={<PrivateRoutes />}>
             <Route

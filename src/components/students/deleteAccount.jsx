@@ -27,7 +27,7 @@ export default function UpdateEmail(props) {
                         if (res.state === 'success') {
                             try {
                                 deleteAccount()
-                                navigate('/');
+                                navigate('/grades_portal');
                             }
                             catch (e) {
                                 setError("An error occurred while deleting account")
@@ -76,9 +76,8 @@ export default function UpdateEmail(props) {
                 <Modal.Title>Delete Account</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-
                 <div className="w-100">
-                    {error && <Alert variant='danger'>{error}</Alert>}
+                    {error && <Alert variant='danger' onClose={() => setError('')} dismissible>{error}</Alert>}
                     <Form onSubmit={handleSubmit}>
                         <Form.Group className='mb-3' >
                             <Form.Label>Confirm Password</Form.Label>

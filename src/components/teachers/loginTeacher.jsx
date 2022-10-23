@@ -68,7 +68,7 @@ export default function Login() {
                 <Card className='p-2'>
                     <Card.Body>
                         <h2 className='text-center mb-4'>Teacher Login</h2>
-                        {error && <Alert variant='danger'>{error}</Alert>}
+                        {error && <Alert variant='danger' onClose={() => setError('')} dismissible>{error}</Alert>}
                         <Form onSubmit={handleSubmit}>
                             <Form.Group className='mb-3'>
                                 <Form.Label>Email</Form.Label>
@@ -104,7 +104,7 @@ export default function Login() {
                     Forgot password? <Link to='/resetPassword'>Reset</Link>
                 </div>
                 <div className="w-100 text-center mt-2">
-                    Go back? <Link to='/'>Home</Link>
+                    Go back? <Link to='/grades_portal'>Home</Link>
                 </div>
             </div>
         </Container>

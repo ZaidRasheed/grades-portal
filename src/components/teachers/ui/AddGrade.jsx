@@ -81,8 +81,8 @@ export default function AddGrade(props) {
         <Card className='p-2 '>
             <Card.Body>
                 <h2 className='text-center mb-4'>Add Grade</h2>
-                {success && <Alert variant='success'>{success}</Alert>}
-                {error && <Alert variant='danger'>{error}</Alert>}
+                {success && <Alert variant='success' onClose={() => setSuccess('')} dismissible>{success}</Alert>}
+                {error && <Alert variant='danger' onClose={() => setError('')} dismissible>{error}</Alert>}
                 <Form onSubmit={handleSubmit}>
                     <Form.Group className='mb-4 ' style={{ maxWidth: '700px' }}>
                         <Form.Label>Student Email*</Form.Label>

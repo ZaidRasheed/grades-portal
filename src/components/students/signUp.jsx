@@ -93,7 +93,7 @@ export default function Signup() {
                 <Card className='p-2'>
                     <Card.Body>
                         <h2 className='text-center mb-4'>Sign Up</h2>
-                        {error && <Alert variant='danger'>{error}</Alert>}
+                        {error && <Alert variant='danger' onClose={() => setError('')} dismissible>{error}</Alert>}
                         <Form onSubmit={handleSubmit}>
                             <Form.Group className='mb-3'>
                                 <Form.Label>First Name</Form.Label>

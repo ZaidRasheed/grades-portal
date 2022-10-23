@@ -2,7 +2,7 @@ import { Button, Container } from 'react-bootstrap';
 import { UserAuth } from '../context/AuthContext.jsx';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import UpdatePassword from '../updatePassword.jsx';
+import UpdatePassword from '../UpdatePassword.jsx';
 import DeleteAccount from './deleteAccount.jsx'
 export default function StudentProfile() {
 
@@ -31,7 +31,8 @@ export default function StudentProfile() {
 
     // ! refresh student data
     const [refresh, setRefresh] = useState(true);
-    const [refreshLoading, setRefreshLoading] = useState(false)
+    const [refreshLoading, setRefreshLoading] = useState(false);
+    const [refreshSpinner, setRefreshSpinner] = useState(false);
 
     const refreshStudentData = () => {
         setRefreshLoading(true);
@@ -39,10 +40,6 @@ export default function StudentProfile() {
         setRefresh((e) => {
             return !e
         })
-
-        setTimeout(() => {
-            setRefreshLoading(false);
-        }, 2000)
     }
 
     useEffect(() => {
@@ -65,6 +62,10 @@ export default function StudentProfile() {
                 .catch((error) => {
                     console.log(error)
                 })
+                .finally(() => {
+                    setRefreshLoading(false);
+                    setRefreshSpinner(false);
+                })
         }
     }, [id, refresh])
 
@@ -81,10 +82,13 @@ export default function StudentProfile() {
                 <Button
                     variant='outline-primary'
                     className='mb-4 mt-4'
-                    onClick={refreshStudentData}
+                    onClick={() => {
+                        setRefreshSpinner(true);
+                        refreshStudentData();
+                    }}
                     disabled={refreshLoading}
                 >
-                    {refreshLoading ? <div className="spinner-border spinner-border text-primary" style={{ width: '1.5rem', height: '1.5rem' }} role="status"></div> : 'Refresh'}
+                    {refreshSpinner ? <div className="spinner-border spinner-border text-primary" style={{ width: '1.5rem', height: '1.5rem' }} role="status"></div> : 'Refresh'}
                 </Button>
 
                 {grades?.length > 0 ? <div className='overflow-scroll mt-4 mb-5' style={{ maxHeight: "33vh", minHeight: '15vh' }}>
@@ -131,7 +135,7 @@ export default function StudentProfile() {
                 <div className="w-100 mt-3">
                     <Button variant="outline-primary" className='text-center mb-4 btn-lg mt-3' onClick={() => {
                         logOut();
-                        navigate('/')
+                        navigate('/grades_portal')
                     }}>Log out</Button>
                 </div>
             </div>

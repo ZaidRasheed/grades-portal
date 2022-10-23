@@ -37,7 +37,7 @@ export default function StudentsList(props) {
         <Card className='p-2 '>
             <Card.Body>
                 <h2 className='text-center mb-4'>Students</h2>
-                {error && <Alert variant='danger'>{error}</Alert>}
+                {error && <Alert variant='danger' onClose={() => setError('')} dismissible>{error}</Alert>}
                 <Form onSubmit={handleSubmit}>
                     <Form.Group className='mb-4 ' style={{ maxWidth: '700px' }}>
                         <Form.Label>Student Name</Form.Label>

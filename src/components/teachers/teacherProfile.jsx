@@ -3,7 +3,7 @@ import { UserAuth } from '../context/AuthContext.jsx';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
-import UpdatePassword from '../updatePassword.jsx';
+import UpdatePassword from '../UpdatePassword.jsx';
 import Options from './ui/Options.jsx';
 
 export default function TeacherProfile() {
@@ -23,19 +23,14 @@ export default function TeacherProfile() {
     // ! refresh student data
     const [refresh, setRefresh] = useState(true);
     const [refreshLoading, setRefreshLoading] = useState(false)
-
+    const [refreshSpinner, setRefreshSpinner] = useState(false);
 
 
     const refreshStudentData = () => {
         setRefreshLoading(true);
-
         setRefresh((e) => {
             return !e
         })
-
-        setTimeout(() => {
-            setRefreshLoading(false);
-        }, 2000)
     }
 
 
@@ -68,6 +63,7 @@ export default function TeacherProfile() {
     // ! for getting student data and there emails
 
     useEffect(() => {
+        setRefreshLoading(true);
         getAllStudents()
             .then(studentsData => {
                 setStudents(studentsData)
@@ -78,6 +74,10 @@ export default function TeacherProfile() {
                 setStudentEmails(studentsEmails)
             })
             .catch(() => { })
+            .finally(() => {
+                setRefreshLoading(false);
+                setRefreshSpinner(false);
+            })
 
     }, [refresh])
 
@@ -94,7 +94,7 @@ export default function TeacherProfile() {
             <div style={{ maxWidth: "900px", margin: '0 auto' }} className='d-flex flex-row-reverse' >
                 <Button className=' text-center mb-1 btn-lg mt-2' variant="outline-primary" onClick={() => {
                     logOut();
-                    navigate('/')
+                    navigate('/grades_portal')
                 }}>Log out</Button>
             </div>
 
@@ -106,6 +106,9 @@ export default function TeacherProfile() {
                     <Options
                         refreshStudentData={refreshStudentData}
                         refreshLoading={refreshLoading}
+
+                        setRefreshSpinner={setRefreshSpinner}
+                        refreshSpinner={refreshSpinner}
 
                         students={students}
                         studentEmails={studentEmails}
