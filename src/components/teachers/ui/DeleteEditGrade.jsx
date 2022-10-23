@@ -137,10 +137,10 @@ export default function DeleteEditGrade(props) {
                         setSuccess(`Grade "${gradeName}" Deleted Successfully`)
                     }
                     else
-                        setError("Error, Couldn't Delete Student Grade")
+                        setError(`Error, Couldn't Delete Grade "${gradeName}"`)
                 })
                 .catch(e => {
-                    setError("Error, Couldn't Delete Student Grade")
+                    setError(`Error, Couldn't Delete Grade "${gradeName}"`)
                 })
                 .finally(() => {
                     props.refreshStudentData();
@@ -228,13 +228,13 @@ export default function DeleteEditGrade(props) {
         editGrade(student.id, currentNameRef.current, newGrade)
             .then((data) => {
                 if (data?.state === 'success') {
-                    setModalSuccess("Grade Updated Successfully")
+                    setModalSuccess(`Grade "${newGrade.name}" Updated Successfully`)
                 }
                 else
-                    setModalError("Error, Couldn't Update Grade Grade")
+                    setModalError(`Error, Couldn't Update Grade "${currentNameRef.current}"`)
             })
             .catch(e => {
-                setModalError("Error, Couldn't Update Grade Grade")
+                setModalError(`Error, Couldn't Update Grade "${currentNameRef.current}"`)
             })
             .finally(() => {
                 props.refreshStudentData();
