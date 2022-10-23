@@ -38,7 +38,7 @@
       percentage: number
       }
     ]
-  }
+}
   ```
 - Data is validated on the forms and on the functions which add the data to the database and most importantly on firestore security rules.<br><br>
 - Routes are protected and allow access only of the user is logged in, authorized routes are implemented so users can also access the user profile and same thing on for teachers.<br><br>
