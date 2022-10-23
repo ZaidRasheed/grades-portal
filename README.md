@@ -84,9 +84,9 @@ rules_version = '2';
       && (request.resource.data.email == resource.data.email)
       && (request.resource.data.name == resource.data.name)
       && (request.resource.data.grades.size()== resource.data.grades.size() -1 ||
-        (	
-        	(request.resource.data.grades.size()== resource.data.grades.  size() +1) &&
-        		(
+          (
+            (request.resource.data.grades.size()== resource.data.grades.  size() +1) &&
+              (
                 (request.resource.data.grades[request.resource.data.  grades.size()-1].name is string)
                 && (request.resource.data.grades[request.resource.data. grades.size()-1].name.size() > 0)
                 && (request.resource.data.grades[request.resource.data. grades.size()-1].percentage is number)
@@ -97,7 +97,7 @@ rules_version = '2';
                 && (request.resource.data.grades[request.resource.data. grades.size()-1].total >0)
                 && (request.resource.data.grades[request.resource.data. grades.size()-1].mark >=0)
                 && (request.resource.data.grades[request.resource.data. grades.size()-1].mark <= request.resource.data.grades  [request.resource.data.grades.size()-1].total)
-                )
+              )
             )
          );
       }
