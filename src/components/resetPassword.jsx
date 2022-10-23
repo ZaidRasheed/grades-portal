@@ -18,7 +18,7 @@ export default function ResetPassword() {
         event.preventDefault();
         setLoading(true);
 
-        if(emailRef.current.value.length<4){
+        if (emailRef.current.value.length < 4) {
             setLoading(false);
             return setError('Invalid email')
         }
