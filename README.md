@@ -23,8 +23,23 @@
 ## Description and Approach 
 
 - There are two collections in the database one for students and another for teachers.<br><br>
-- Whenever a user (student) is created a new student document is created in the database which has the same id, the structure of a student object is as follow:<br/>
-{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name: string<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;email: string<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;id: string<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;grades: array<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name: string<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mark: integer<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;total: integer<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;percentage: number<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>}<br><br>
+- Whenever a user (student) is created a new student document is created in the database which has the same id, the structure of a student object is as follow: 
+```
+{
+  name: string
+  email: string
+  id: string
+  grades: array
+    [ 
+      { 
+      name: string
+      mark: integer
+      total: integer
+      percentage: number
+      }
+    ]
+  }
+  ```
 - Data is validated on the forms and on the functions which add the data to the database and most importantly on firestore security rules.<br><br>
 - Routes are protected and allow access only of the user is logged in, authorized routes are implemented so users can also access the user profile and same thing on for teachers.<br><br>
 - Requests are protected by firestore as follow: 
@@ -46,44 +61,49 @@
 3. A student can ONLY read his own data, teachers can read all students data.
 4. Students data can be created ONLY once when the student creates an account.
 5. ONLY a student can delete ONLY his own own account.
-6. ONLY a teacher can update student marks, the name,id and email should remain the same or else rejected, all marks can be deleted (array length is 0), the new mark should have the correct data types :
+6. ONLY a teacher can update student marks, the name,id and email should remain the same or else rejected, one mark can be deleted or added per request, any new mark should have the correct data types :
     1. Grade name should be a string and should not be empty.
     2. Percentage should be a number and between 0 and 100.
     3. Mark should be a number greater than or equal 0.
-    4. Total should be a number greater 0.
-    5. Total should be greater than or equal to mark.
->rules_version = '2';
->> service cloud.firestore {
-  >>> match /databases/{database}/documents {<br>
-    >>>>match /teachers/{userId}{<br>
-    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;allow write,delete,create,update: if false;<br>
-    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;allow read: if request.auth != null && request.auth.uid == userId;<br>
-    }<br>
-    match /students/{userId} {<br>
-    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;allow write: if false;<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;allow read: if request.auth != null && (request.auth.uid == userId || exists(/databases/$(database)/documents/teachers/$(request.auth.uid)));<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;allow create:if request.auth != null && request.auth.uid == userId;<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;allow delete: if request.auth != null && request.auth.uid == userId;<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;allow update: if exists(/databases/$(database)/documents/teachers/$(request.auth.uid)) 
-      <br>&& (request.resource.data.id == resource.data.id)<br>
-      && (request.resource.data.email == resource.data.email)<br>
-      && (request.resource.data.name == resource.data.name)<br>
-      && (request.resource.data.grades.size()== resource.data.grades.size() -1 ||<br>
-      (<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(request.resource.data.grades[request.resource.data.grades.size()-1].name is string)<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&& (request.resource.data.grades[request.resource.data.grades.size()-1].name.size() > 0)<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&&(request.resource.data.grades[request.resource.data.grades.size()-1].percentage is number)<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&& (request.resource.data.grades[request.resource.data.grades.size()-1].mark is number)<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&& (request.resource.data.grades[request.resource.data.grades.size()-1].total is number)<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&& (request.resource.data.grades[request.resource.data.grades.size()-1].percentage >=0 )<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&& (request.resource.data.grades[request.resource.data.grades.size()-1].percentage <=100)<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&& (request.resource.data.grades[request.resource.data.grades.size()-1].total >0)<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&& (request.resource.data.grades[request.resource.data.grades.size()-1].mark >=0)<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&& (request.resource.data.grades[request.resource.data.grades.size()-1].mark <= request.resource.data.grades[request.resource.data.grades.size()-1].total)
-      ));}<br>
-    }<br>
-}<br>
-
+    4. Total should be a number greater 0 and also greater than or equal to mark.
+```
+rules_version = '2';
+  service cloud.firestore {
+    match /databases/{database}/documents {
+      match /teachers/{userId}{
+      allow write,delete,create,update: if false;
+      allow read: if request.auth != null && request.auth.uid == userId;
+    }
+    match /students/{userId} {
+      allow write: if false;
+      allow read: if request.auth != null && (request.auth.uid == userId || exists(/databases/$(database)/documents/teachers/$(request.auth.uid)));
+      allow create:if request.auth != null && request.auth.uid == userId;
+      allow delete: if request.auth != null && request.auth.uid == userId;
+      allow update: if exists(/databases/$(database)/documents/teachers/$(request.auth.uid)) 
+      && (request.resource.data.id == resource.data.id)
+      && (request.resource.data.email == resource.data.email)
+      && (request.resource.data.name == resource.data.name)
+      && (request.resource.data.grades.size()== resource.data.grades.size() -1 ||
+        (	
+        	(request.resource.data.grades.size()== resource.data.grades.  size() +1) &&
+        		(
+                (request.resource.data.grades[request.resource.data.  grades.size()-1].name is string)
+                && (request.resource.data.grades[request.resource.data. grades.size()-1].name.size() > 0)
+                && (request.resource.data.grades[request.resource.data. grades.size()-1].percentage is number)
+                && (request.resource.data.grades[request.resource.data. grades.size()-1].mark is number)
+                && (request.resource.data.grades[request.resource.data. grades.size()-1].total is number)
+                && (request.resource.data.grades[request.resource.data. grades.size()-1].percentage >=0 )
+                && (request.resource.data.grades[request.resource.data. grades.size()-1].percentage <=100)
+                && (request.resource.data.grades[request.resource.data. grades.size()-1].total >0)
+                && (request.resource.data.grades[request.resource.data. grades.size()-1].mark >=0)
+                && (request.resource.data.grades[request.resource.data. grades.size()-1].mark <= request.resource.data.grades  [request.resource.data.grades.size()-1].total)
+                )
+            )
+         );
+      }
+    }
+  }
+```
 
 ---
 ## You can view the project live [here](https://zaidrasheed.github.io/grades_portal/)
