@@ -18,7 +18,7 @@
 3. Teachers can also update their password if they are logged in or request a link to change if they are logged out.
 4. Teachers can view all students and their grades.
 5. Teachers can post, delete and edit grades for all students.
-6. Teachers can sort grades for any students based on different criteria (passed, failed, highest, lowest).
+6. Teachers can sort grades for any students based on different criteria (passed, failed, highest, lowest) per subject.
 
 ## Description and Approach 
 
@@ -33,6 +33,7 @@
     [ 
       { 
       name: string
+      subject: string
       mark: integer
       total: integer
       percentage: number
@@ -63,9 +64,10 @@
 5. ONLY a student can delete ONLY his own own account.
 6. ONLY a teacher can update student marks, the name,id and email should remain the same or else rejected, one mark can be deleted or added per request, any new mark should have the correct data types :
     1. Grade name should be a string and should not be empty.
-    2. Percentage should be a number and between 0 and 100.
-    3. Mark should be a number greater than or equal 0.
-    4. Total should be a number greater 0 and also greater than or equal to mark.
+    2. Grade subject should be a string and should not be empty.
+    3. Percentage should be a number and between 0 and 100.
+    4. Mark should be a number greater than or equal 0.
+    5. Total should be a number greater 0 and also greater than or equal to mark.
 ```
 rules_version = '2';
   service cloud.firestore {
@@ -89,6 +91,8 @@ rules_version = '2';
               (
                 (request.resource.data.grades[request.resource.data.  grades.size()-1].name is string)
                 && (request.resource.data.grades[request.resource.data. grades.size()-1].name.size() > 0)
+                && (request.resource.data.grades[request.resource.data.grades.size()-1].subject is string)
+                && (request.resource.data.grades[request.resource.data.grades.size()-1].subject.size() > 0)
                 && (request.resource.data.grades[request.resource.data. grades.size()-1].percentage is number)
                 && (request.resource.data.grades[request.resource.data. grades.size()-1].mark is number)
                 && (request.resource.data.grades[request.resource.data. grades.size()-1].total is number)

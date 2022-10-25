@@ -32,7 +32,6 @@ export default function Signup() {
                         email: emailRef.current.value.trim(),
                         name: fullName,
                         grades: [],
-                        subjects: []
                     }
                     await addStudent(student, userCredential.user.uid)
                     navigate('/student-profile')
