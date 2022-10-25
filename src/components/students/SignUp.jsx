@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { Container, Form, Button, Card, Alert } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import { UserAuth } from '../context/AuthContext.jsx'
@@ -28,10 +28,11 @@ export default function Signup() {
             .then(async (userCredential) => {
                 try {
                     const student = {
+                        id: userCredential.user.uid,
+                        email: emailRef.current.value.trim(),
                         name: fullName,
                         grades: [],
-                        email: emailRef.current.value.trim(),
-                        id: userCredential.user.uid
+                        subjects: []
                     }
                     await addStudent(student, userCredential.user.uid)
                     navigate('/student-profile')
@@ -54,7 +55,7 @@ export default function Signup() {
                         setError('cant update name try again')
                         break;
                     }
-                    case 'auth/invalid-email':{
+                    case 'auth/invalid-email': {
                         setError('Invalid email')
                         break;
                     }

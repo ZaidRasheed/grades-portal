@@ -1,9 +1,14 @@
-import React, { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { Form, Button, Alert, Modal } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import { UserAuth } from '../context/AuthContext.jsx'
 
-export default function UpdateEmail(props) {
+export default function DeleteAccount() {
+
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
     const currentPassword = useRef()
 
@@ -68,32 +73,36 @@ export default function UpdateEmail(props) {
 
 
     return (
-        <Modal centered show={props.show} onHide={() => {
-            props.handleClose()
-            setError('')
-        }}>
-            <Modal.Header closeButton >
-                <Modal.Title>Delete Account</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <div className="w-100">
-                    {error && <Alert variant='danger' onClose={() => setError('')} dismissible>{error}</Alert>}
-                    <Form onSubmit={handleSubmit}>
-                        <Form.Group className='mb-3' >
-                            <Form.Label>Confirm Password</Form.Label>
-                            <Form.Control type='password' ref={currentPassword} autoComplete='current-password' required />
-                        </Form.Group>
-                        <Button disabled={loading} className='w-100 mt-3 mb-3' type='submit'>Submit</Button>
-                    </Form>
-                </div>
-            </Modal.Body>
-            <Modal.Footer>
-                <div className="w-100 text-center mt-2">
-                    Note! This action is irreversible and all data will be lost permanently.
-                </div>
-            </Modal.Footer>
-        </Modal>
-
+        <div className="w-100 text-center">
+            <Button variant="link" onClick={handleShow}>
+                Delete Account?
+            </Button>
+            <Modal centered show={show} onHide={() => {
+                handleClose()
+                setError('')
+            }}>
+                <Modal.Header closeButton >
+                    <Modal.Title>Delete Account</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="w-100">
+                        {error && <Alert variant='danger' onClose={() => setError('')} dismissible>{error}</Alert>}
+                        <Form onSubmit={handleSubmit}>
+                            <Form.Group className='mb-3' >
+                                <Form.Label>Confirm Your Password</Form.Label>
+                                <Form.Control type='password' ref={currentPassword} autoComplete='current-password' required />
+                            </Form.Group>
+                            <Button disabled={loading} className='w-100 mt-3 mb-3' type='submit'>Submit</Button>
+                        </Form>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <div className="w-100 text-center mt-2">
+                        Note! This action is irreversible and all data will be lost permanently.
+                    </div>
+                </Modal.Footer>
+            </Modal>
+        </div>
     )
 }
 

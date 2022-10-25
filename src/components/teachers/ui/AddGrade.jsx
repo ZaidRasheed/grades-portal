@@ -6,6 +6,7 @@ export default function AddGrade(props) {
 
     const emailRef = useRef()
     const gradeRef = useRef()
+    const subjectRef = useRef()
     const markRef = useRef()
     const totalRef = useRef()
 
@@ -26,50 +27,65 @@ export default function AddGrade(props) {
         setSuccess('')
         setLoading(true)
 
-        if (!gradeRef.current.value.length) {
+        if (!gradeRef.current?.value.length) {
             setLoading(false)
-            return setError('Assignment name invalid, please provide a name.')
+            return setError('Grade name invalid, please provide a name.')
         }
 
-        if (emailRef.current.value.length < 5) {
+        if (emailRef.current?.value.length < 5) {
             setLoading(false)
             return setError('Email invalid.')
         }
 
-        if (!props.studentEmails.includes(emailRef.current.value)) {
+        if (subjectRef.current?.value.length < 3) {
             setLoading(false)
-            return setError('No student found.')
+            return setError('Grade subject is invalid, please provide a subject.')
         }
 
-        if (markRef.current.value < 0) {
+        if (markRef.current?.value < 0) {
             setLoading(false)
             return setError('Invalid, Marks cant be negative.')
         }
 
-        if (totalRef.current.value < 1) {
+        if (totalRef.current?.value < 1) {
             setLoading(false)
             return setError('Invalid, Marks should be at least out of 1.')
         }
 
-        if (parseInt(markRef.current.value) > parseInt(totalRef.current.value)) {
+        if (parseInt(markRef.current?.value) > parseInt(totalRef.current?.value)) {
             setLoading(false)
             return setError('Invalid, Mark cant be greater than 100%.')
         }
-
-        const mark = {
-            name: capitalizeFirstLetter(gradeRef.current.value.trim()),
-            mark: +markRef.current.value,
-            total: +totalRef.current.value,
-            percentage: +((parseInt(markRef.current.value) / parseInt(totalRef.current.value) * 100).toFixed(2))
+        let flag = true
+        let id = null
+        for (let i = 0; i < props.students.length; i++) {
+            if (props.students[i].email === emailRef.current?.value.trim()) {
+                flag = false
+                id = props.students[i].id
+                break
+            }
+        }
+        if (flag) {
+            setLoading(false)
+            return setError('No student found.')
         }
 
-        addNewGrade(emailRef.current.value, mark)
+        const mark = {
+            name: capitalizeFirstLetter(gradeRef.current?.value.trim()),
+            mark: +markRef.current?.value,
+            total: +totalRef.current?.value,
+            percentage: +((parseInt(markRef.current?.value) / parseInt(totalRef.current?.value) * 100).toFixed(2)),
+            subject: capitalizeFirstLetter(subjectRef.current?.value.trim())
+        }
+
+        addNewGrade(id, mark)
             .then(() => {
                 setSuccess('Grade Added Successfully')
                 props.refreshStudentData()
             })
-            .catch(() => {
+            .catch((e) => {
                 setError("Grade Couldn't be added")
+                console.log(e)
             })
             .finally(() => {
                 setLoading(false);
@@ -84,7 +100,7 @@ export default function AddGrade(props) {
                 {success && <Alert variant='success' onClose={() => setSuccess('')} dismissible>{success}</Alert>}
                 {error && <Alert variant='danger' onClose={() => setError('')} dismissible>{error}</Alert>}
                 <Form onSubmit={handleSubmit}>
-                    <Form.Group className='mb-4 ' style={{ maxWidth: '700px' }}>
+                    <Form.Group className='mb-4 ' style={{ maxWidth: '900px' }}>
                         <Form.Label>Student Email*</Form.Label>
                         <InputGroup>
                             <InputGroup.Text>@</InputGroup.Text>
@@ -97,7 +113,7 @@ export default function AddGrade(props) {
                                 required />
                         </InputGroup>
                     </Form.Group>
-                    <Form.Group className='mb-4' style={{ maxWidth: '700px' }}>
+                    <Form.Group className='mb-4' style={{ maxWidth: '900px' }}>
                         <Form.Label>Grade Name*</Form.Label>
                         <Form.Control
                             type='string'
@@ -106,15 +122,24 @@ export default function AddGrade(props) {
                             ref={gradeRef}
                             required />
                     </Form.Group>
+                    <Form.Group className='mb-4' style={{ maxWidth: '900px' }}>
+                        <Form.Label>Subject*</Form.Label>
+                        <Form.Control
+                            type='string'
+                            placeholder="Subject"
+                            aria-label="Subject"
+                            ref={subjectRef}
+                            required />
+                    </Form.Group>
                     <Row>
                         <Col lg={3} md={3} sm={4} xs={6}>
-                            <Form.Group className='mb-4' style={{ maxWidth: '90px' }}>
+                            <Form.Group className='mb-4' style={{ maxWidth: '150px' }}>
                                 <Form.Label>Grade*</Form.Label>
                                 <Form.Control type='number' ref={markRef} placeholder="ex:3" required />
                             </Form.Group>
                         </Col>
                         <Col lg={3} md={3} sm={4} xs={6}>
-                            <Form.Group className='mb-4' style={{ maxWidth: '90px' }}>
+                            <Form.Group className='mb-4' style={{ maxWidth: '150px' }}>
                                 <Form.Label>/Total *</Form.Label>
                                 <Form.Control type='number' placeholder="ex:10" ref={totalRef} required />
                             </Form.Group>

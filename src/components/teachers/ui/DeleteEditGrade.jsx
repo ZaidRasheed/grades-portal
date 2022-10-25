@@ -3,8 +3,11 @@ import { useState, useRef, useEffect } from 'react'
 import { UserAuth } from '../../context/AuthContext'
 export default function DeleteEditGrade(props) {
 
+
+
     const emailRef = useRef()
     const assignmentRef = useRef()
+    const subjectRef = useRef()
 
     const [error, setError] = useState('')
     const [success, setSuccess] = useState('')
@@ -19,6 +22,13 @@ export default function DeleteEditGrade(props) {
     const [student, setStudent] = useState(null)
 
 
+    // ! for editing the grade
+    const newNameRef = useRef()
+    const newMarkRef = useRef()
+    const newTotalRef = useRef()
+
+    const oldGrade = useRef()
+
     // ! for edit grade modal
     const [show, setShow] = useState(false);
 
@@ -28,28 +38,17 @@ export default function DeleteEditGrade(props) {
         setModalLoading(false)
         setShow(false)
     };
-    const showModal = (gradeName, gradeMark, gradeTotal) => {
-        currentNameRef.current = gradeName
-        currentMarkRef.current = gradeMark
-        currentTotalRef.current = gradeTotal
+    const showModal = (grade) => {
+        oldGrade.current = grade;
         setShow(true)
     };
 
-    // ! for editing the grade
-    const newNameRef = useRef()
-    const newMarkRef = useRef()
-    const newTotalRef = useRef()
-
-    const currentNameRef = useRef()
-    const currentMarkRef = useRef()
-    const currentTotalRef = useRef()
 
     function capitalizeFirstLetter(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
-    const handleSubmit = async (e) => {
-
+    const handleSearch = async (e) => {
         e?.preventDefault()
         setError('')
         setSuccess('')
@@ -61,39 +60,78 @@ export default function DeleteEditGrade(props) {
             return setError('Email invalid.')
         }
 
-        if (!props.studentEmails.includes(emailRef.current.value.trim())) {
-            setLoading(false)
-            setStudent(null)
-            return setError('No student found.')
-        }
+        let flag = true;
 
         for (let i = 0; i < props.students.length; i++) {
             if (props.students[i].email === emailRef.current.value.trim()) {
-                if (assignmentRef.current.value.length) {
-                    let grades = []
-                    props.students[i].grades.forEach(grade => {
-                        if (grade.name.toLowerCase().includes(assignmentRef.current.value.trim().toLowerCase())) {
-                            grades.push(grade)
-                        }
-                        if (grades.length) {
-                            setError('')
-                            setStudent({
-                                email: props.students[i].email,
-                                name: props.students[i].name,
-                                grades: grades,
-                                id: props.students[i].id
-                            })
-                        }
-                        else {
+                flag = false
+                if (!assignmentRef.current.value.length && !subjectRef.current.value.length) {
+                    setStudent(props.students[i])
+                }
+                else {
+                    let grades1 = []
+                    let grades2 = []
+                    if (assignmentRef.current.value.length) {
+                        props.students[i].grades.forEach(grade => {
+                            if (grade.name.toLowerCase().includes(assignmentRef.current.value.trim().toLowerCase())) {
+                                grades1.push(grade)
+                            }
+                        })
+                    }
+                    if (subjectRef.current.value.length) {
+                        const value = subjectRef.current.value.trim().toLowerCase()
+                        props.students[i].grades.forEach(grade => {
+                            if (grade.subject.toLowerCase().includes(value)) {
+                                grades2.push(grade)
+                            }
+                        })
+                    }
+
+                    if (grades1.length && grades2.length) {
+                        const gradesUnion = grades1.filter(value => grades2.includes(value));
+                        if (!gradesUnion.length) {
                             setStudent(null)
                             setError('No result found')
                         }
-                    })
+                        else {
+                            setStudent({
+                                email: props.students[i].email,
+                                name: props.students[i].name,
+                                grades: gradesUnion,
+                                id: props.students[i].id
+                            })
+                        }
+                    }
+                    else if (!grades1.length && !grades2.length) {
+                        setStudent(null)
+                        setError('No result found')
+                    }
+                    else if (grades1.length) {
+                        setError('')
+                        setStudent({
+                            email: props.students[i].email,
+                            name: props.students[i].name,
+                            grades: grades1,
+                            id: props.students[i].id
+                        })
+                    }
+                    else {
+                        setError('')
+                        setStudent({
+                            email: props.students[i].email,
+                            name: props.students[i].name,
+                            grades: grades2,
+                            id: props.students[i].id
+                        })
+                    }
                 }
-                else
-                    setStudent(props.students[i])
-                break
+                break;
             }
+        }
+        if (flag) {
+            setLoading(false)
+            setStudent(null)
+            return setError('Mo student found.')
         }
         setLoading(false)
     }
@@ -127,11 +165,11 @@ export default function DeleteEditGrade(props) {
         }
     }, [props.refreshLoading])
 
-    const handleDeleteMark = (gradeName) => {
+    const handleDeleteMark = (gradeName, subject) => {
         setError('')
         setError('')
         if (window.confirm(`Are you sure you want to delete grade ${gradeName} for student ${student.name}`)) {
-            deleteGrade(student.id, gradeName)
+            deleteGrade(student.id, gradeName, subject)
                 .then((data) => {
                     if (data?.state === 'success') {
                         setSuccess(`Grade "${gradeName}" Deleted Successfully`)
@@ -141,25 +179,23 @@ export default function DeleteEditGrade(props) {
                 })
                 .catch(e => {
                     setError(`Error, Couldn't Delete Grade "${gradeName}"`)
+                    console.log(e)
                 })
                 .finally(() => {
                     props.refreshStudentData();
                 })
         }
     }
+
+
     const handleEditGrade = (e) => {
         e.preventDefault()
         setModalError('')
         setModalSuccess('')
         setModalLoading(true)
 
+        let newGrade = oldGrade?.current
 
-        let newGrade = {
-            name: currentNameRef.current,
-            mark: +currentMarkRef.current,
-            total: +currentTotalRef.current,
-            percentage: +((parseInt(currentMarkRef.current) / parseInt(currentTotalRef.current) * 100).toFixed(2))
-        }
         // ! flags for knowing if data changed or not 
         let nameChanged = false;
         let markChanged = false;
@@ -169,7 +205,7 @@ export default function DeleteEditGrade(props) {
             nameChanged = true;
             newGrade = {
                 ...newGrade,
-                name: capitalizeFirstLetter(newNameRef.current.value)
+                name: capitalizeFirstLetter(newNameRef.current.value.trim())
             }
         }
         if (newMarkRef.current.value.length) {
@@ -216,72 +252,86 @@ export default function DeleteEditGrade(props) {
         else if (markChanged) {
             newGrade = {
                 ...newGrade,
-                percentage: +((parseInt(newMarkRef.current.value) / parseInt(currentTotalRef.current) * 100).toFixed(2))
+                percentage: +((parseInt(newMarkRef.current.value) / parseInt(oldGrade?.current?.total) * 100).toFixed(2))
             }
         }
         else if (totalChanged) {
             newGrade = {
                 ...newGrade,
-                percentage: +((parseInt(currentMarkRef.current) / parseInt(newTotalRef.current.value) * 100).toFixed(2))
+                percentage: +((parseInt(oldGrade?.current?.mark) / parseInt(newTotalRef.current.value) * 100).toFixed(2))
             }
         }
-        editGrade(student.id, currentNameRef.current, newGrade)
+
+        if ((oldGrade.current.mark === newGrade.mark && oldGrade.current.total === newGrade.total) && oldGrade.current.name === newGrade.name) {
+            setModalLoading(false)
+            return setModalError('Please change values')
+        }
+
+        editGrade(student.id, oldGrade?.current?.name, oldGrade?.current?.subject, newGrade)
             .then((data) => {
                 if (data?.state === 'success') {
                     setModalSuccess(`Grade "${newGrade.name}" Updated Successfully`)
                 }
                 else
-                    setModalError(`Error, Couldn't Update Grade "${currentNameRef.current}"`)
+                    setModalError(`Error, Couldn't Update Grade "${oldGrade?.current?.name}"`)
             })
             .catch(e => {
-                setModalError(`Error, Couldn't Update Grade "${currentNameRef.current}"`)
+                setModalError(`Error, Couldn't Update Grade "${oldGrade?.current?.name}"`)
+                console.log(e)
             })
             .finally(() => {
                 props.refreshStudentData();
             })
     }
 
-    return (
-        <Card className='p-2 '>
-            <Modal centered show={show} onHide={closeModal}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Edit Grade</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <div className="w-100">
-                        {modalError && <Alert variant='danger' onClose={() => setModalError('')} dismissible>{modalError}</Alert>}
-                        {modalSuccess && <Alert variant='success' onClose={() => setModalSuccess('')} dismissible>{modalSuccess}</Alert>}
-                        <Form onSubmit={handleEditGrade}>
-                            <h1>{currentNameRef.current} Grade for :</h1>
-                            <p className='display-6'><i> {student?.name}</i></p>
-                            <h5>Mark: {currentMarkRef.current}/ {currentTotalRef.current}</h5>
-                            <br />
+    return (<>
+        <Modal centered show={show} onHide={closeModal}>
+            <Modal.Header closeButton>
+                <Modal.Title>Edit Grade</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <div className="w-100">
+                    {modalError && <Alert variant='danger' onClose={() => setModalError('')} dismissible>{modalError}</Alert>}
+                    {modalSuccess && <Alert variant='success' onClose={() => setModalSuccess('')}>{modalSuccess}</Alert>}
+                    <Form onSubmit={handleEditGrade}>
+                        <h1>{oldGrade?.current?.subject} {oldGrade?.current?.name}</h1>
+                        <p className='display-6'>Grade for: <i> {student?.name}</i></p>
+                        <h5>Mark: {oldGrade?.current?.mark}/ {oldGrade?.current?.total}</h5>
+                        <br />
+                        <Form.Group className='mb-3'>
+                            <Form.Label>New Grade Name</Form.Label>
+                            <Form.Control type='string' ref={newNameRef} placeholder={oldGrade?.current?.name} />
+                        </Form.Group>
+                        <Form.Group className='mb-3'>
+                            <Form.Label>New Mark</Form.Label>
+                            <Form.Control type='number' ref={newMarkRef} placeholder={oldGrade?.current?.mark} />
+                        </Form.Group>
+                        <Form.Group className='mb-3'>
+                            <Form.Label>New Total</Form.Label>
+                            <Form.Control type='number' ref={newTotalRef} placeholder={oldGrade?.current?.total} />
+                        </Form.Group>
+                        <fieldset disabled>
                             <Form.Group className='mb-3'>
-                                <Form.Label>New Grade Name</Form.Label>
-                                <Form.Control type='string' ref={newNameRef} placeholder={currentNameRef.current} />
+                                <Form.Label>Subject</Form.Label>
+                                <Form.Control readOnly placeholder={oldGrade?.current?.subject} />
                             </Form.Group>
-                            <Form.Group className='mb-3'>
-                                <Form.Label>New Mark</Form.Label>
-                                <Form.Control type='number' ref={newMarkRef} placeholder={currentMarkRef.current} />
-                            </Form.Group>
-                            <Form.Group className='mb-3'>
-                                <Form.Label>New Total</Form.Label>
-                                <Form.Control type='number' ref={newTotalRef} placeholder={currentTotalRef.current} />
-                            </Form.Group>
-                            <Button disabled={modalLoading} className='w-100 mt-3 mb-3' type='submit'> Submit</Button>
-                        </Form>
-                    </div>
-                </Modal.Body>
-            </Modal>
+                        </fieldset>
+                        <Button disabled={modalLoading} className='w-100 mt-3 mb-3' type='submit'> Submit</Button>
+                    </Form>
+                </div>
+            </Modal.Body>
+        </Modal>
+        
+        <Card className='p-2'>
             <Card.Body>
                 <h2 className='text-center mb-4'>Delete and Edit Grades</h2>
                 {success && <Alert variant='success' onClose={() => setSuccess('')} dismissible>{success}</Alert>}
                 {error && <Alert variant='danger' onClose={() => setError('')} dismissible>{error}</Alert>}
-                <Form onSubmit={handleSubmit}>
+                <Form onSubmit={handleSearch}>
                     <h4 className='mb-3'>Search</h4>
                     <Row>
                         <Col lg={6} md={6} sm={6} xs={12}>
-                            <Form.Group className='mb-4 ' style={{ maxWidth: '700px' }}>
+                            <Form.Group className='mb-4 ' style={{ maxWidth: '900px' }}>
                                 <Form.Label>Student Email *</Form.Label>
                                 <InputGroup>
                                     <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
@@ -296,13 +346,25 @@ export default function DeleteEditGrade(props) {
                             </Form.Group>
                         </Col>
                         <Col lg={6} md={6} sm={6} xs={12}>
-                            <Form.Group className='mb-4' style={{ maxWidth: '700px' }}>
+                            <Form.Group className='mb-4' style={{ maxWidth: '900px' }}>
                                 <Form.Label>Grade Name</Form.Label>
                                 <Form.Control
                                     type='string'
                                     ref={assignmentRef}
-                                    placeholder="Assignment Name"
-                                    aria-label="Assignment Name" />
+                                    placeholder="Grade Name"
+                                    aria-label="Grade Name" />
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col lg={6} md={6} sm={6} xs={12}>
+                            <Form.Group className='mb-4' style={{ maxWidth: '900px' }}>
+                                <Form.Label>Subject</Form.Label>
+                                <Form.Control
+                                    type='string'
+                                    ref={subjectRef}
+                                    placeholder="Subject"
+                                    aria-label="Subject" />
                             </Form.Group>
                         </Col>
                     </Row>
@@ -325,7 +387,8 @@ export default function DeleteEditGrade(props) {
                                 <thead className='table-dark'>
                                     <tr>
                                         <th scope="col">#</th>
-                                        <th scope="col">Assignment </th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Subject</th>
                                         <th scope="col">Grade</th>
                                         <th className='text-center' scope="col">Percentage</th>
                                         <th className='text-center' scope="col">Edit</th>
@@ -338,20 +401,21 @@ export default function DeleteEditGrade(props) {
                                             <tr key={i}>
                                                 <td>{i + 1}</td>
                                                 <th scope="row">{grade.name}</th>
+                                                <th scope="row">{grade.subject}</th>
                                                 <td>{grade.mark}/{grade.total}</td>
                                                 <td className='text-center'>{grade.percentage}%</td>
                                                 <th className='text-center'><Button
                                                     variant="outline-success"
                                                     className='btn'
                                                     onClick={() => {
-                                                        showModal(grade.name, grade.mark, grade.total);
+                                                        showModal(grade);
                                                     }}
                                                 >Edit</Button></th>
                                                 <th className='text-center'><Button
                                                     variant="outline-danger"
                                                     className='btn'
                                                     onClick={() => {
-                                                        handleDeleteMark(grade.name);
+                                                        handleDeleteMark(grade.name, grade.subject);
                                                     }}
                                                 >Delete &times;</Button></th>
                                             </tr>
@@ -365,5 +429,7 @@ export default function DeleteEditGrade(props) {
                 }
             </Card.Body>
         </Card >
+    </>
+
     )
 }

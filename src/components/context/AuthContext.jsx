@@ -6,7 +6,6 @@ import {
     sendPasswordResetEmail,
     signOut,
     updatePassword,
-    updateProfile,
     EmailAuthProvider,
     reauthenticateWithCredential
 } from "firebase/auth";
@@ -15,8 +14,8 @@ import {
     collection, doc,
     getDocs,
     setDoc, getDoc, deleteDoc, updateDoc,
-    arrayUnion, query, where,
-} from 'firebase/firestore'
+    arrayUnion
+} from "firebase/firestore"
 
 import { auth, db } from "../../firebase.jsx";
 
@@ -52,11 +51,6 @@ export const AuthContextProvider = ({ children }) => {
         return updatePassword(currentUser, password)
     }
 
-    const updateName = (name) => {
-        return updateProfile(currentUser, {
-            displayName: name
-        })
-    }
     const deleteAccount = () => {
         currentUser.delete();
     }
@@ -95,7 +89,7 @@ export const AuthContextProvider = ({ children }) => {
                 .then(snapshot => {
                     let students = []
                     snapshot.docs.forEach(doc => {
-                        students.push({ ...doc.data(), id: doc.id })
+                        students.push(doc.data())
                     })
                     resolve(students)
                 })
@@ -134,40 +128,6 @@ export const AuthContextProvider = ({ children }) => {
         })
     }
 
-    function getAllTeachersEmails() {
-        const colRef = collection(db, 'teachers')
-        return new Promise((resolve, reject) => {
-            getDocs(colRef)
-                .then(snapshot => {
-                    let teachers = []
-                    snapshot.docs.forEach(doc => {
-                        teachers.push(doc.data().email)
-                    })
-                    resolve(teachers)
-                })
-                .catch(err => {
-                    reject(err.message)
-                })
-        })
-    }
-
-    function getAllStudentsEmails() {
-        const colRef = collection(db, 'students')
-        return new Promise((resolve, reject) => {
-            getDocs(colRef)
-                .then(snapshot => {
-                    let studentsEmails = []
-                    snapshot.docs.forEach(doc => {
-                        studentsEmails.push(doc.data().email)
-                    })
-                    resolve(studentsEmails)
-                })
-                .catch(err => {
-                    reject(err.message)
-                })
-        })
-    }
-
     function deleteStudent(id) {
         const docRef = doc(db, 'students', id);
         return new Promise((resolve, reject) => {
@@ -188,7 +148,7 @@ export const AuthContextProvider = ({ children }) => {
                 .then(res => {
                     if (res.exists())
                         return resolve(res.data());
-                    return reject({ error: "Teacher Doesn't exist" })
+                    return reject({ error: `Teacher Doesn't exist` })
 
                 })
                 .catch(err => {
@@ -211,30 +171,10 @@ export const AuthContextProvider = ({ children }) => {
         }
     }
 
-    async function checkIfStudent(email) {
-        try {
-            const studentEmails = await getAllStudentsEmails();
-            if (studentEmails.includes(email)) {
-                return true;
-            }
-            return false
-        }
-        catch (e) {
-            return false
-        }
-    }
-
-    async function addNewGrade(studentEmail, newGrade) {
-        const q = query(collection(db, "students"), where("email", "==", studentEmail));
-        const querySnapshot = await getDocs(q);
-        let id = null
-        querySnapshot.forEach((doc) => {
-            // doc.data() is never undefined for query doc snapshots
-            id = doc.id;
-        });
-        const docRef = doc(db, 'students', id);
+    async function addNewGrade(studentId, newGrade) {
+        const studentRef = doc(db, 'students', studentId);
         return new Promise((resolve, reject) => {
-            updateDoc(docRef, { grades: arrayUnion(newGrade) })
+            updateDoc(studentRef, { grades: arrayUnion(newGrade) })
                 .then(res => {
                     resolve({ state: 'success' });
                 })
@@ -244,20 +184,16 @@ export const AuthContextProvider = ({ children }) => {
         })
     }
 
-    async function deleteGrade(studentID, gradeName) {
-        const docRef = doc(db, 'students', studentID);
+    async function deleteGrade(studentID, gradeName, gradeSubject) {
         try {
-            const student = await getStudentData(studentID)
-            const newData = {
-                email: student.data().email,
-                name: student.data().name,
-                grades: student.data().grades.filter(grade => {
-                    return grade.name !== gradeName
-                }),
-                id: studentID
-            }
+            const studentRef = doc(db, 'students', studentID);
+            const studentDoc = await getDoc(studentRef);
+            let student = studentDoc.data()
+            const grades = student.grades.filter(grade => {
+                return (grade.name !== gradeName || grade.subject !== gradeSubject)
+            })
             return new Promise((resolve, reject) => {
-                return new setDoc(docRef, newData)
+                return new updateDoc(docRef, { grades: grades })
                     .then(res => {
                         resolve({ state: 'success' });
                     })
@@ -271,23 +207,18 @@ export const AuthContextProvider = ({ children }) => {
         }
     }
 
-    async function editGrade(studentID, gradeName, updatedGrade) {
+    async function editGrade(studentID, gradeName, gradeSubject, updatedGrade) {
         const docRef = doc(db, 'students', studentID);
         try {
             const student = await getStudentData(studentID)
-            const newData = {
-                email: student.data().email,
-                name: student.data().name,
-                grades: student.data().grades.map(grade => {
-                    if (grade.name === gradeName) {
-                        return updatedGrade
-                    }
-                    return grade
-                }),
-                id: studentID
-            }
+            const grades = student.data().grades.map(grade => {
+                if (grade.name === gradeName && grade.subject === gradeSubject) {
+                    return updatedGrade
+                }
+                return grade
+            })
             return new Promise((resolve, reject) => {
-                return new setDoc(docRef, newData)
+                return new updateDoc(docRef, { grades: grades })
                     .then(res => {
                         resolve({ state: 'success' });
                     })
@@ -300,7 +231,6 @@ export const AuthContextProvider = ({ children }) => {
             return { error: e };
         }
     }
-
 
     return (
         <UserContext.Provider value={{
@@ -310,7 +240,6 @@ export const AuthContextProvider = ({ children }) => {
             sendResetPasswordLink,
             resetPassword,
             logOut,
-            updateName,
             deleteAccount,
             createCredential,
             reAuth,
@@ -319,10 +248,7 @@ export const AuthContextProvider = ({ children }) => {
             getStudentData,
             getTeacherData,
             addStudent,
-            getAllTeachersEmails,
-            getAllStudentsEmails,
             deleteStudent,
-            checkIfStudent,
             checkIfTeacher,
             addNewGrade,
             deleteGrade,

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { Container, Form, Button, Card, Alert, InputGroup } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import { UserAuth } from '../context/AuthContext.jsx'
@@ -11,7 +11,7 @@ export default function Login() {
     const [loading, setLoading] = useState(false);
 
 
-    const { logIn, checkIfStudent } = UserAuth();
+    const { logIn } = UserAuth();
 
     const navigate = useNavigate()
 
@@ -25,11 +25,6 @@ export default function Login() {
             setLoading(false);
             return setError('Invalid Password');
         }
-
-        // if (!await checkIfStudent(emailRef.current.value)) {
-        //     setLoading(false);
-        //     return setError('Not a Student')
-        // }
         else {
             try {
                 await logIn(emailRef.current.value.trim(), passwordRef.current.value.trim());

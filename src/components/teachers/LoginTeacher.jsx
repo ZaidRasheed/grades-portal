@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { Container, Form, Button, Card, Alert, InputGroup } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import { UserAuth } from '../context/AuthContext.jsx'
@@ -26,11 +26,6 @@ export default function Login() {
             setLoading(false);
             return setError('Invalid Password');
         }
-
-        // if (!await checkIfTeacher(emailRef.current.value)) {
-        //     setLoading(false);
-        //     return setError('Not a teacher')
-        // }
 
         try {
             await logIn(emailRef.current.value.trim(), passwordRef.current.value.trim());

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { Form, Button, Card, Alert, InputGroup } from 'react-bootstrap'
 
 
@@ -39,7 +39,7 @@ export default function StudentsList(props) {
                 <h2 className='text-center mb-4'>Students</h2>
                 {error && <Alert variant='danger' onClose={() => setError('')} dismissible>{error}</Alert>}
                 <Form onSubmit={handleSubmit}>
-                    <Form.Group className='mb-4 ' style={{ maxWidth: '700px' }}>
+                    <Form.Group className='mb-4 ' style={{ maxWidth: '900px' }}>
                         <Form.Label>Student Name</Form.Label>
                         <Form.Control
                             type='name'
@@ -49,7 +49,7 @@ export default function StudentsList(props) {
                             aria-label="Student name"
                             autoComplete="name" />
                     </Form.Group>
-                    <Form.Group className='mb-4 ' style={{ maxWidth: '700px' }}>
+                    <Form.Group className='mb-4 ' style={{ maxWidth: '900px' }}>
                         <Form.Label>Student Email</Form.Label>
                         <InputGroup>
                             <InputGroup.Text>@</InputGroup.Text>
