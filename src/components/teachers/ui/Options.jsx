@@ -6,7 +6,7 @@ import Data from './Data.jsx';
 import DeleteGrade from './DeleteEditGrade.jsx';
 import Profile from './Profile.jsx';
 export default function Options(props) {
-    const [propertiesShown, setPropertiesShown] = useState('students list')
+    const [propertiesShown, setPropertiesShown] = useState('add grade')
 
     return (
         <>
@@ -18,14 +18,6 @@ export default function Options(props) {
                         }}
                         className={`nav-link ${propertiesShown === 'profile' ? 'active' : ''}`}
                     >Profile</button>
-                </li>
-                <li className="nav-item" role="presentation">
-                    <button
-                        onClick={() => {
-                            setPropertiesShown('students list')
-                        }}
-                        className={`nav-link ${propertiesShown === 'students list' ? 'active' : ''}`}
-                    >Students</button>
                 </li>
                 <li className="nav-item" role="presentation">
                     <button
@@ -49,7 +41,15 @@ export default function Options(props) {
                             setPropertiesShown('data')
                         }}
                         className={`nav-link ${propertiesShown === 'data' ? 'active' : ''}`}
-                    >Data</button>
+                    >Students Data</button>
+                </li>
+                <li className="nav-item" role="presentation">
+                    <button
+                        onClick={() => {
+                            setPropertiesShown('students list')
+                        }}
+                        className={`nav-link ${propertiesShown === 'students list' ? 'active' : ''}`}
+                    >Students List</button>
                 </li>
             </ul>
 

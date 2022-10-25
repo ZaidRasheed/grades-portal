@@ -34,7 +34,7 @@ export default function StudentsList(props) {
     }
 
     return (
-        <Card className='p-2 '>
+        <Card className='p-2 mb-3'>
             <Card.Body>
                 <h2 className='text-center mb-4'>Students</h2>
                 {error && <Alert variant='danger' onClose={() => setError('')} dismissible>{error}</Alert>}

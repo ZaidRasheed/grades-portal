@@ -2,9 +2,7 @@ import { Row, Col, Form, Button, Card, Alert, InputGroup, Modal } from 'react-bo
 import { useState, useRef, useEffect } from 'react'
 import { UserAuth } from '../../context/AuthContext'
 export default function DeleteEditGrade(props) {
-
-
-
+    
     const emailRef = useRef()
     const assignmentRef = useRef()
     const subjectRef = useRef()
@@ -284,152 +282,153 @@ export default function DeleteEditGrade(props) {
             })
     }
 
-    return (<>
-        <Modal centered show={show} onHide={closeModal}>
-            <Modal.Header closeButton>
-                <Modal.Title>Edit Grade</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <div className="w-100">
-                    {modalError && <Alert variant='danger' onClose={() => setModalError('')} dismissible>{modalError}</Alert>}
-                    {modalSuccess && <Alert variant='success' onClose={() => setModalSuccess('')}>{modalSuccess}</Alert>}
-                    <Form onSubmit={handleEditGrade}>
-                        <h1>{oldGrade?.current?.subject} {oldGrade?.current?.name}</h1>
-                        <p className='display-6'>Grade for: <i> {student?.name}</i></p>
-                        <h5>Mark: {oldGrade?.current?.mark}/ {oldGrade?.current?.total}</h5>
-                        <br />
-                        <Form.Group className='mb-3'>
-                            <Form.Label>New Grade Name</Form.Label>
-                            <Form.Control type='string' ref={newNameRef} placeholder={oldGrade?.current?.name} />
-                        </Form.Group>
-                        <Form.Group className='mb-3'>
-                            <Form.Label>New Mark</Form.Label>
-                            <Form.Control type='number' ref={newMarkRef} placeholder={oldGrade?.current?.mark} />
-                        </Form.Group>
-                        <Form.Group className='mb-3'>
-                            <Form.Label>New Total</Form.Label>
-                            <Form.Control type='number' ref={newTotalRef} placeholder={oldGrade?.current?.total} />
-                        </Form.Group>
-                        <fieldset disabled>
+    return (
+        <>
+            <Modal centered show={show} onHide={closeModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Edit Grade</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="w-100">
+                        {modalError && <Alert variant='danger' onClose={() => setModalError('')} dismissible>{modalError}</Alert>}
+                        {modalSuccess && <Alert variant='success' onClose={() => setModalSuccess('')}>{modalSuccess}</Alert>}
+                        <Form onSubmit={handleEditGrade}>
+                            <h1>{oldGrade?.current?.subject} {oldGrade?.current?.name}</h1>
+                            <p className='display-6'>Grade for: <i> {student?.name}</i></p>
+                            <h5>Mark: {oldGrade?.current?.mark}/ {oldGrade?.current?.total}</h5>
+                            <br />
                             <Form.Group className='mb-3'>
-                                <Form.Label>Subject</Form.Label>
-                                <Form.Control readOnly placeholder={oldGrade?.current?.subject} />
+                                <Form.Label>New Grade Name</Form.Label>
+                                <Form.Control type='string' ref={newNameRef} placeholder={oldGrade?.current?.name} />
                             </Form.Group>
-                        </fieldset>
-                        <Button disabled={modalLoading} className='w-100 mt-3 mb-3' type='submit'> Submit</Button>
-                    </Form>
-                </div>
-            </Modal.Body>
-        </Modal>
-        
-        <Card className='p-2'>
-            <Card.Body>
-                <h2 className='text-center mb-4'>Delete and Edit Grades</h2>
-                {success && <Alert variant='success' onClose={() => setSuccess('')} dismissible>{success}</Alert>}
-                {error && <Alert variant='danger' onClose={() => setError('')} dismissible>{error}</Alert>}
-                <Form onSubmit={handleSearch}>
-                    <h4 className='mb-3'>Search</h4>
-                    <Row>
-                        <Col lg={6} md={6} sm={6} xs={12}>
-                            <Form.Group className='mb-4 ' style={{ maxWidth: '900px' }}>
-                                <Form.Label>Student Email *</Form.Label>
-                                <InputGroup>
-                                    <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
-                                    <Form.Control
-                                        type='email'
-                                        ref={emailRef}
-                                        placeholder="Student Email"
-                                        aria-label="Student Email"
-                                        autoComplete="email"
-                                        required />
-                                </InputGroup>
+                            <Form.Group className='mb-3'>
+                                <Form.Label>New Mark</Form.Label>
+                                <Form.Control type='number' ref={newMarkRef} placeholder={oldGrade?.current?.mark} />
                             </Form.Group>
-                        </Col>
-                        <Col lg={6} md={6} sm={6} xs={12}>
-                            <Form.Group className='mb-4' style={{ maxWidth: '900px' }}>
-                                <Form.Label>Grade Name</Form.Label>
-                                <Form.Control
-                                    type='string'
-                                    ref={assignmentRef}
-                                    placeholder="Grade Name"
-                                    aria-label="Grade Name" />
+                            <Form.Group className='mb-3'>
+                                <Form.Label>New Total</Form.Label>
+                                <Form.Control type='number' ref={newTotalRef} placeholder={oldGrade?.current?.total} />
                             </Form.Group>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col lg={6} md={6} sm={6} xs={12}>
-                            <Form.Group className='mb-4' style={{ maxWidth: '900px' }}>
-                                <Form.Label>Subject</Form.Label>
-                                <Form.Control
-                                    type='string'
-                                    ref={subjectRef}
-                                    placeholder="Subject"
-                                    aria-label="Subject" />
-                            </Form.Group>
-                        </Col>
-                    </Row>
-                    <div className='text-center'>
-                        <Button
-                            style={{ maxWidth: '200px' }}
-                            disabled={loading || props.refreshLoading}
-                            className='w-100 mt-1 mb-1 text-center'
-                            type='submit'
-                        >Search</Button>
+                            <fieldset disabled>
+                                <Form.Group className='mb-3'>
+                                    <Form.Label>Subject</Form.Label>
+                                    <Form.Control readOnly placeholder={oldGrade?.current?.subject} />
+                                </Form.Group>
+                            </fieldset>
+                            <Button disabled={modalLoading} className='w-100 mt-3 mb-3' type='submit'> Submit</Button>
+                        </Form>
                     </div>
-                </Form>
-                {student &&
-                    <div className='overflow-scroll mt-4 mb-5' style={{ maxHeight: "50vh" }}>
-                        <h2>{student?.name}</h2>
-                        <h4 className='mb-3'>{student?.email}</h4>
+                </Modal.Body>
+            </Modal>
 
-                        {student.grades.length ? <div className='w-100' style={{ display: 'block' }}>
-                            <table className="table h-25 table-striped">
-                                <thead className='table-dark'>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Subject</th>
-                                        <th scope="col">Grade</th>
-                                        <th className='text-center' scope="col">Percentage</th>
-                                        <th className='text-center' scope="col">Edit</th>
-                                        <th className='text-center' scope="col">Delete</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {student.grades.map((grade, i) => {
-                                        return (
-                                            <tr key={i}>
-                                                <td>{i + 1}</td>
-                                                <th scope="row">{grade.name}</th>
-                                                <th scope="row">{grade.subject}</th>
-                                                <td>{grade.mark}/{grade.total}</td>
-                                                <td className='text-center'>{grade.percentage}%</td>
-                                                <th className='text-center'><Button
-                                                    variant="outline-success"
-                                                    className='btn'
-                                                    onClick={() => {
-                                                        showModal(grade);
-                                                    }}
-                                                >Edit</Button></th>
-                                                <th className='text-center'><Button
-                                                    variant="outline-danger"
-                                                    className='btn'
-                                                    onClick={() => {
-                                                        handleDeleteMark(grade.name, grade.subject);
-                                                    }}
-                                                >Delete &times;</Button></th>
-                                            </tr>
-                                        )
-                                    })}
-                                </tbody>
-                            </table>
+            <Card className='p-2 mb-3'>
+                <Card.Body>
+                    <h2 className='text-center mb-4'>Delete and Edit Grades</h2>
+                    {success && <Alert variant='success' onClose={() => setSuccess('')} dismissible>{success}</Alert>}
+                    {error && <Alert variant='danger' onClose={() => setError('')} dismissible>{error}</Alert>}
+                    <Form onSubmit={handleSearch}>
+                        <h4 className='mb-3'>Search</h4>
+                        <Row>
+                            <Col lg={6} md={6} sm={6} xs={12}>
+                                <Form.Group className='mb-4 ' style={{ maxWidth: '900px' }}>
+                                    <Form.Label>Student Email *</Form.Label>
+                                    <InputGroup>
+                                        <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
+                                        <Form.Control
+                                            type='email'
+                                            ref={emailRef}
+                                            placeholder="Student Email"
+                                            aria-label="Student Email"
+                                            autoComplete="email"
+                                            required />
+                                    </InputGroup>
+                                </Form.Group>
+                            </Col>
+                            <Col lg={6} md={6} sm={6} xs={12}>
+                                <Form.Group className='mb-4' style={{ maxWidth: '900px' }}>
+                                    <Form.Label>Grade Name</Form.Label>
+                                    <Form.Control
+                                        type='string'
+                                        ref={assignmentRef}
+                                        placeholder="Grade Name"
+                                        aria-label="Grade Name" />
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col lg={6} md={6} sm={6} xs={12}>
+                                <Form.Group className='mb-4' style={{ maxWidth: '900px' }}>
+                                    <Form.Label>Subject</Form.Label>
+                                    <Form.Control
+                                        type='string'
+                                        ref={subjectRef}
+                                        placeholder="Subject"
+                                        aria-label="Subject" />
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                        <div className='text-center'>
+                            <Button
+                                style={{ maxWidth: '200px' }}
+                                disabled={loading || props.refreshLoading}
+                                className='w-100 mt-1 mb-1 text-center'
+                                type='submit'
+                            >Search</Button>
                         </div>
-                            : <h3 className='text-center text-danger'>No grades yet</h3>}
-                    </div>
-                }
-            </Card.Body>
-        </Card >
-    </>
+                    </Form>
+                    {student &&
+                        <div className='overflow-scroll mt-4 mb-5' style={{ maxHeight: "50vh" }}>
+                            <h2>{student?.name}</h2>
+                            <h4 className='mb-3'>{student?.email}</h4>
+
+                            {student.grades.length ? <div className='w-100' style={{ display: 'block' }}>
+                                <table className="table h-25 table-striped">
+                                    <thead className='table-dark'>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Subject</th>
+                                            <th scope="col">Grade</th>
+                                            <th className='text-center' scope="col">Percentage</th>
+                                            <th className='text-center' scope="col">Edit</th>
+                                            <th className='text-center' scope="col">Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {student.grades.map((grade, i) => {
+                                            return (
+                                                <tr key={i}>
+                                                    <td>{i + 1}</td>
+                                                    <th scope="row">{grade.name}</th>
+                                                    <th scope="row">{grade.subject}</th>
+                                                    <td>{grade.mark}/{grade.total}</td>
+                                                    <td className='text-center'>{grade.percentage}%</td>
+                                                    <th className='text-center'><Button
+                                                        variant="outline-success"
+                                                        className='btn'
+                                                        onClick={() => {
+                                                            showModal(grade);
+                                                        }}
+                                                    >Edit</Button></th>
+                                                    <th className='text-center'><Button
+                                                        variant="outline-danger"
+                                                        className='btn'
+                                                        onClick={() => {
+                                                            handleDeleteMark(grade.name, grade.subject);
+                                                        }}
+                                                    >Delete &times;</Button></th>
+                                                </tr>
+                                            )
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
+                                : <h3 className='text-center text-danger'>No grades yet</h3>}
+                        </div>
+                    }
+                </Card.Body>
+            </Card >
+        </>
 
     )
 }

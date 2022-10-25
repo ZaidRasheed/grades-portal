@@ -94,7 +94,7 @@ export default function AddGrade(props) {
 
 
     return (
-        <Card className='p-2 '>
+        <Card className='p-2 mb-3'>
             <Card.Body>
                 <h2 className='text-center mb-4'>Add Grade</h2>
                 {success && <Alert variant='success' onClose={() => setSuccess('')} dismissible>{success}</Alert>}
