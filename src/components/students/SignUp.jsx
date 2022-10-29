@@ -58,13 +58,13 @@ export default function Signup() {
             password: passwordRef.current.value
         }
         createStudentAccount(studentData)
-            .then(resp => {
-                if (resp.status === 'success') {
+            .then(res => {
+                if (res.status === 'success') {
                     navigate('/student-profile')
                 }
                 else {
                     setLoading(false);
-                    setError(resp.message)
+                    setError(res.message)
                 }
             }).catch(error => {
                 setLoading(false)

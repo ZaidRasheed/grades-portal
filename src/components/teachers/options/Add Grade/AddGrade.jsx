@@ -30,13 +30,13 @@ export default function AddGrade(props) {
         }
 
         addNewGrade(grade, emailRef?.current?.value, props.students)
-            .then((resp) => {
-                if (resp.status === 'success') {
-                    setSuccess(resp.message)
+            .then((res) => {
+                if (res.status === 'success') {
+                    setSuccess(res.message)
                     props.refreshStudentData()
                 }
                 else
-                    setError(resp.message)
+                    setError(res.message)
             })
             .catch((e) => {
                 setError("Grade Couldn't be added")

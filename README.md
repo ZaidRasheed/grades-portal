@@ -42,7 +42,7 @@
 }
   ```
 - Data is validated on the forms and on the functions which add the data to the database and most importantly on firestore security rules.<br><br>
-- Routes are protected and allow access only of the user is logged in, authorized routes are implemented so users can also access the user profile and same thing on for teachers.<br><br>
+- Routes are protected and allow access only of the user is logged in and if the user has a corresponding document in the database, authorized routes are implemented so users can also access the user profile and same thing on for teachers.<br><br>
 - Requests are protected by firestore as follow: 
     * For students
         + Students can be created in the database only upon successfully creating an account and only allowed one student document per account.

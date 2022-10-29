@@ -8,17 +8,17 @@ export default function DeleteStudentModal(props) {
     const [loading, setLoading] = useState(false)
 
     const { deleteGrade } = UserAuth()
-    
+
     const handleDeleteGrade = () => {
         setLoading(true)
         deleteGrade(props.data.student.id, props.data.gradeName, props.data.subject)
-            .then((resp) => {
-                if (resp.status === 'success') {
-                    setSuccess(resp.message)
+            .then((res) => {
+                if (res.status === 'success') {
+                    setSuccess(res.message)
                 }
                 else {
                     setLoading(false)
-                    setError(resp.message)
+                    setError(res.message)
                 }
             })
             .catch(e => {

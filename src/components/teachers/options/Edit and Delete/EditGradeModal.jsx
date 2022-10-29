@@ -51,14 +51,14 @@ export default function EditGradeModal(props) {
         }
 
         editGrade(props.student.id, props.oldGrade.name, props.oldGrade.subject, newGrade)
-            .then((resp) => {
-                if (resp.status === 'success') {
-                    setSuccess(resp.message)
+            .then((res) => {
+                if (res.status === 'success') {
+                    setSuccess(res.message)
                     props.refreshStudentData();
                 }
                 else {
                     setLoading(false)
-                    setError(resp.message)
+                    setError(res.message)
                 }
             })
             .catch(e => {
