@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react'
 import { Form, Button, Card, Alert, InputGroup } from 'react-bootstrap'
 
-
 export default function StudentsList(props) {
     const [email, setEmail] = useState('')
     const [name, setName] = useState('')

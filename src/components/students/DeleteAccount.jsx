@@ -1,12 +1,10 @@
 import { useRef, useState } from 'react'
 import { Form, Button, Alert, Modal } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
-import { UserAuth } from '../context/AuthContext.jsx'
+import { UserAuth } from '../context/AuthContext'
 
 export default function DeleteAccount() {
-
     const [show, setShow] = useState(false);
-
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
@@ -15,60 +13,33 @@ export default function DeleteAccount() {
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false);
 
-    const { deleteAccount, currentUser, createCredential, reAuth, deleteStudent } = UserAuth();
+    const { deleteAccount } = UserAuth();
 
     const navigate = useNavigate()
 
-    async function deleteUser() {
-        try {
-            const credential = createCredential(currentUser.email, currentPassword.current.value);
-            await reAuth(currentUser, credential);
-            try {
-                const id = currentUser.uid
-                setError('')
-                setLoading(true);
-                deleteStudent(id)
-                    .then(res => {
-                        if (res.state === 'success') {
-                            try {
-                                deleteAccount()
-                                navigate('/');
-                            }
-                            catch (e) {
-                                setError("An error occurred while deleting account")
-                                setLoading(false);
-                            }
-                        }
-                        else {
-                            setError("An error occurred while deleting account")
-                        }
-                    })
-                    .catch(error => {
-                        setError("An error occurred while deleting account")
-                    })
-            }
-            catch (e2) {
-                setLoading(false);
-            }
-        }
-        catch (e1) {
-            switch (e1.code) {
-                case 'auth/wrong-password': {
-                    setError('Wrong password please enter your current password')
-                    break;
-                }
-                default: {
-                    setError("An error occurred while verifying current password")
-                    break;
-                }
-            }
-            setLoading(false);
-        }
-    }
 
     function handleSubmit(event) {
         event.preventDefault();
-        deleteUser();
+        setLoading(true)
+
+        if (currentPassword.current.value.length < 6) {
+            setLoading(false)
+            return setError('Invalid Password.')
+        }
+        deleteAccount(currentPassword.current.value)
+            .then(res => {
+                if (res.status === 'success') {
+                    navigate('/')
+                }
+                else {
+                    setLoading(true)
+                    setError(error.message)
+                }
+            })
+            .catch(error => {
+                setLoading(true)
+                setError("Account couldn't be deleted.")
+            })
     }
 
 

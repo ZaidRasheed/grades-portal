@@ -1,13 +1,13 @@
 import { Button, Container, Dropdown, DropdownButton } from 'react-bootstrap';
-import { UserAuth } from '../context/AuthContext.jsx';
+import { UserAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState, useMemo } from 'react';
-import UpdatePassword from '../UpdatePassword.jsx';
-import DeleteAccount from './DeleteAccount.jsx'
+import UpdatePassword from '../UpdatePassword';
+import DeleteAccount from './DeleteAccount'
+
 export default function StudentProfile() {
-
     const { currentUser, logOut, getStudentData } = UserAuth();
-
+    
     const navigate = useNavigate()
 
     const [student, setStudent] = useState();
@@ -31,7 +31,7 @@ export default function StudentProfile() {
                     }
                 })
                 .catch((error) => {
-                    console.log(error)
+
                 })
                 .finally(() => {
                     setRefreshLoading(false);

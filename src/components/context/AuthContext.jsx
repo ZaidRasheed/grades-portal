@@ -7,7 +7,7 @@ import {
     signOut,
     updatePassword,
     EmailAuthProvider,
-    reauthenticateWithCredential
+    reauthenticateWithCredential,
 } from "firebase/auth";
 
 import {
@@ -17,7 +17,7 @@ import {
     arrayUnion
 } from "firebase/firestore"
 
-import { auth, db } from "../../firebase.jsx";
+import { auth, db } from "../../firebase";
 
 const UserContext = createContext();
 
@@ -25,6 +25,9 @@ export const UserAuth = () => {
     return useContext(UserContext);
 }
 
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 export const AuthContextProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
@@ -47,14 +50,6 @@ export const AuthContextProvider = ({ children }) => {
         signOut(auth);
     }
 
-    const resetPassword = (password) => {
-        return updatePassword(currentUser, password)
-    }
-
-    const deleteAccount = () => {
-        currentUser.delete();
-    }
-
     const createCredential = (email, password) => {
         const credential = EmailAuthProvider.credential(
             email,
@@ -62,21 +57,59 @@ export const AuthContextProvider = ({ children }) => {
         )
         return credential;
     }
-    const reAuth = (currentUser, credential) => {
-        return reauthenticateWithCredential(currentUser, credential);
+
+    const resetPassword = async (oldPassword, newPassword) => {
+        try {
+            const credential = createCredential(currentUser.email, oldPassword);
+            await reauthenticateWithCredential(currentUser, credential);
+            await updatePassword(currentUser, newPassword)
+            return { status: 'success', message: 'Password updated successfully.' }
+        }
+        catch (error) {
+            switch (error.code) {
+                case 'auth/weak-password': {
+                    return { status: 'error', message: 'Weak Password.' }
+                }
+                case 'auth/invalid-email': {
+                    return { status: 'error', message: 'Please provide a valid email.' }
+                }
+                case 'auth/wrong-password': {
+                    return { status: 'error', message: 'Wrong password please provide your current password, or reset your password through email.' }
+                }
+                default: {
+                    return { status: 'error', message: 'Failed to update password.' }
+                }
+            }
+        }
     }
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, user => {
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user) {
-                setCurrentUser(user)
+                try {
+                    const studentRef = doc(db, 'students', user?.uid);
+                    const studentSnap = await getDoc(studentRef);
+                    const teacherRef = doc(db, 'teachers', user?.uid);
+                    const teacherSnap = await getDoc(teacherRef);
+                    if (teacherSnap.exists() || studentSnap.exists()) {
+                        setCurrentUser(user)
+                    }
+                    else {
+                        signOut(auth);
+                    }
+                }
+                catch (error) {
+                    setCurrentUser(null)
+                }
+                finally {
+                    setLoading(false);
+                }
             }
             else {
                 setCurrentUser(null)
+                setLoading(false);
             }
-            setLoading(false);
         });
-
         return () => {
             unsubscribe();
         };
@@ -99,17 +132,42 @@ export const AuthContextProvider = ({ children }) => {
         })
     }
 
-    function addStudent(student, id) {
-        const docRef = doc(db, 'students', id);
-        return new Promise((resolve, reject) => {
-            setDoc(docRef, student)
-                .then(res => {
-                    resolve({ state: 'success' });
-                })
-                .catch(err => {
-                    reject(err)
-                })
-        })
+    async function createStudentAccount(studentData) {
+        try {
+            const userCredential = await signUp(studentData.email, studentData.password)
+            try {
+                const student = {
+                    id: userCredential.user.uid,
+                    email: studentData.email,
+                    name: studentData.name,
+                    grades: [],
+                }
+                const studentRef = doc(db, 'students', userCredential.user.uid);
+                await setDoc(studentRef, student)
+                return { status: 'success', message: 'Account successfully created.' }
+            }
+            catch (error) {
+                //! if the user could
+                userCredential.user.delete()
+                return { status: 'error', message: error.message }
+            }
+        }
+        catch (error) {
+            switch (error.code) {
+                case 'auth/email-already-in-use': {
+                    return { status: 'error', message: 'Email is already in use.' }
+                }
+                case 'auth/weak-password': {
+                    return { status: 'error', message: 'Weak Password.' }
+                }
+                case 'auth/invalid-email': {
+                    return { status: 'error', message: 'Please provide a valid email.' }
+                }
+                default: {
+                    return { status: 'error', message: 'Failed to create an account.' }
+                }
+            }
+        }
     }
 
     function getStudentData(studentID) {
@@ -128,17 +186,18 @@ export const AuthContextProvider = ({ children }) => {
         })
     }
 
-    function deleteStudent(id) {
-        const docRef = doc(db, 'students', id);
-        return new Promise((resolve, reject) => {
-            deleteDoc(docRef)
-                .then(res => {
-                    resolve({ state: 'success' });
-                })
-                .catch(err => {
-                    reject(err)
-                })
-        })
+    async function deleteAccount(password) {
+        try {
+            const credential = createCredential(currentUser.email, password);
+            await reauthenticateWithCredential(currentUser, credential);
+            const studentDoc = doc(db, 'students', currentUser.uid);
+            await deleteDoc(studentDoc)
+            currentUser.delete();
+            return { status: 'success', message: 'Account successfully deleted.' }
+        }
+        catch (error) {
+            return { status: 'error', message: error.message }
+        }
     }
 
     function getTeacherData(teachersId) {
@@ -171,39 +230,91 @@ export const AuthContextProvider = ({ children }) => {
         }
     }
 
-    async function addNewGrade(studentId, newGrade) {
-        const studentRef = doc(db, 'students', studentId);
-        return new Promise((resolve, reject) => {
-            updateDoc(studentRef, { grades: arrayUnion(newGrade) })
-                .then(res => {
-                    resolve({ state: 'success' });
-                })
-                .catch(err => {
-                    reject(err)
-                })
-        })
-    }
+    async function addNewGrade(grade, email, students) {
 
-    async function deleteGrade(studentID, gradeName, gradeSubject) {
+        const regEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        if (!email || !regEmail.test(email)) {
+            return { status: 'error', message: 'Email invalid.' }
+        }
+
+        let studentId = null
+        for (let i = 0; i < students.length; i++) {
+            if (students[i].email === email.trim()) {
+                studentId = students[i].id
+                break
+            }
+        }
+        if (!studentId) {
+            return { status: 'error', message: 'No student found.' }
+        }
+
+        const regWholeNum = /^\d+$/
+        const alphaNumeric = /^[\w\-\s]+$/
+
+        if (!grade.name || !alphaNumeric.test(grade.name)) {
+            return { status: 'error', message: 'Grade name invalid, please provide alpha numeric values only.' }
+        }
+
+        if (!grade.subject || !alphaNumeric.test(grade.subject)) {
+            return { status: 'error', message: 'Grade subject is invalid, please provide a subject.' }
+        }
+        if (!regWholeNum.test(grade.mark) || !regWholeNum.test(grade.total)) {
+            return { status: 'error', message: 'Invalid, Marks cant be negative.' }
+        }
+
+        if (!grade.mark || grade.mark < 0) {
+            return { status: 'error', message: 'Invalid, Marks cant be negative.' }
+        }
+
+        if (!grade.total || grade.total < 1) {
+            return { status: 'error', message: 'Invalid, Marks should be at least out of 1.' }
+        }
+
+        if (+grade.mark > +grade.total) {
+            return { status: 'error', message: 'Invalid, Mark cant be greater than 100%.' }
+        }
+
+        const newGrade = {
+            name: capitalizeFirstLetter(grade.name.trim()),
+            mark: +grade.mark,
+            total: +grade.total,
+            percentage: +(((+grade.mark / +grade.total) * 100).toFixed(2)),
+            subject: capitalizeFirstLetter(grade.subject.trim())
+        }
+
+        const studentRef = doc(db, 'students', studentId);
         try {
-            const studentRef = doc(db, 'students', studentID);
-            const studentDoc = await getDoc(studentRef);
-            let student = studentDoc.data()
-            const grades = student.grades.filter(grade => {
-                return (grade.name !== gradeName || grade.subject !== gradeSubject)
-            })
-            return new Promise((resolve, reject) => {
-                return new updateDoc(docRef, { grades: grades })
-                    .then(res => {
-                        resolve({ state: 'success' });
-                    })
-                    .catch(err => {
-                        reject(err)
-                    })
-            })
+            await updateDoc(studentRef, { grades: arrayUnion(newGrade) })
+            return { status: 'success', message: 'Mark successfully add' }
         }
         catch (e) {
-            return { error: e };
+            return { status: 'error', message: e.message }
+        }
+
+
+    }
+
+    async function deleteGrade(studentID, name, subject) {
+        try {
+            const studentRef = doc(db, 'students', studentID);
+            const student = await getDoc(studentRef);
+            const grades = student.data().grades.filter(grade => {
+                return (grade.name !== name || grade.subject !== subject)
+            })
+            try {
+                await updateDoc(studentRef, { grades: grades })
+                // !extra check to see if anything was deleted
+                if (grades.length === student.data().grades.length)
+                    return { status: 'error', message: "Error in deleting grade due to wrong referencing." };
+                else
+                    return { status: 'success', message: `${subject} ${name} was deleted successfully` }
+            }
+            catch (error) {
+                return { status: 'error', message: error.message };
+            }
+        }
+        catch (error) {
+            return { status: 'error', message: error.message };
         }
     }
 
@@ -217,18 +328,16 @@ export const AuthContextProvider = ({ children }) => {
                 }
                 return grade
             })
-            return new Promise((resolve, reject) => {
-                return new updateDoc(docRef, { grades: grades })
-                    .then(res => {
-                        resolve({ state: 'success' });
-                    })
-                    .catch(err => {
-                        reject(err)
-                    })
-            })
+            try {
+                await updateDoc(docRef, { grades: grades })
+                return { status: 'success', message: `${gradeSubject} ${gradeName} was updated successfully` }
+            }
+            catch (error) {
+                return { status: 'error', message: error.message };
+            }
         }
-        catch (e) {
-            return { error: e };
+        catch (error) {
+            return { status: 'error', message: error.message };
         }
     }
 
@@ -240,15 +349,13 @@ export const AuthContextProvider = ({ children }) => {
             sendResetPasswordLink,
             resetPassword,
             logOut,
-            deleteAccount,
             createCredential,
-            reAuth,
 
             getAllStudents,
             getStudentData,
             getTeacherData,
-            addStudent,
-            deleteStudent,
+            createStudentAccount,
+            deleteAccount,
             checkIfTeacher,
             addNewGrade,
             deleteGrade,

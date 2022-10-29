@@ -3,23 +3,23 @@ import { AuthContextProvider } from "./context/AuthContext";
 
 import { Routes, Route } from 'react-router-dom'
 
-import Home from './Home.jsx';
+import Home from './Home';
 
-import PrivateRoutes from "./PrivateRoutes.jsx";
-import PublicRoutes from "./PublicRoutes.jsx";
+import PrivateRoutes from "./PrivateRoutes";
+import PublicRoutes from "./PublicRoutes";
 
-import ResetPassword from "./ResetPassword.jsx";
-import Error from "./Error.jsx";
+import ResetPassword from "./ResetPassword";
+import Error from "./Error";
 
-import Signup from "./students/SignUp.jsx";
-import LoginStudents from "./students/LoginStudents.jsx";
-import StudentProfile from "./students/StudentProfile.jsx";
+import Signup from "./students/SignUp";
+import LoginStudents from "./students/LoginStudents";
+import StudentProfile from "./students/StudentProfile";
 
-import LoginTeacher from './teachers/LoginTeacher.jsx'
-import TeacherProfile from './teachers/TeacherProfile.jsx';
+import LoginTeacher from './teachers/LoginTeacher'
+import TeacherProfile from './teachers/TeacherProfile';
 
-import TeacherRoutes from './teachers/TeachersRoutes.jsx';
-import StudentRoutes from './students/StudentsRoutes.jsx'
+import TeacherRoutes from './teachers/TeachersRoutes';
+import StudentRoutes from './students/StudentsRoutes'
 
 function App() {
   return (

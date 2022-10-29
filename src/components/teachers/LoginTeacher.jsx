@@ -1,32 +1,34 @@
 import { useRef, useState } from 'react'
 import { Container, Form, Button, Card, Alert, InputGroup } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
-import { UserAuth } from '../context/AuthContext.jsx'
+import { UserAuth } from '../context/AuthContext'
 
 export default function Login() {
-
-    const { logIn, checkIfTeacher } = UserAuth();
-
-    const navigate = useNavigate();
-
     const emailRef = useRef()
     const passwordRef = useRef()
+
+    const { logIn } = UserAuth();
+
+    const navigate = useNavigate();
 
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false);
 
-
     async function handleSubmit(event) {
         event.preventDefault();
-
         setError('')
         setLoading(true);
 
         if (passwordRef.current.value.length < 4) {
             setLoading(false);
-            return setError('Invalid Password');
+            return setError('Please provide a valid Password.');
         }
+        const regEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
+        if (!regEmail.test(emailRef.current.value.trim())) {
+            setLoading(false);
+            return setError('Please provide a valid Email.');
+        }
         try {
             await logIn(emailRef.current.value.trim(), passwordRef.current.value.trim());
             navigate('/teacher-profile')
@@ -35,11 +37,11 @@ export default function Login() {
         catch (e) {
             switch (e.code) {
                 case 'auth/user-not-found': {
-                    setError("A username with this email doesn't exist,\n Sign up instead?")
+                    setError("A username with this email doesn't exist.")
                     break;
                 }
                 case 'auth/wrong-password': {
-                    setError('Wrong password please try again')
+                    setError('Wrong password please try again.')
                     break;
                 }
                 case 'auth/too-many-requests': {

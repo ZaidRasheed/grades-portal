@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { Button } from 'react-bootstrap';
-import AddGrade from './AddGrade.jsx';
-import StudentsList from './StudentsList.jsx';
-import Data from './Data.jsx';
-import DeleteGrade from './DeleteEditGrade.jsx';
-import Profile from './Profile.jsx';
+import AddGrade from './options/Add Grade/AddGrade';
+import StudentsList from './options/Students Data/StudentsList';
+import Data from './options/Students Data/Data';
+import DeleteEditGrade from './options/Edit and Delete/DeleteEditGrade';
+import Profile from './options/Profile';
+
 export default function Options(props) {
     const [propertiesShown, setPropertiesShown] = useState('add grade')
-
+    
     return (
         <>
             <ul className="nav nav-pills mb-3 mt-5" id="pills-tab" role="tablist">
@@ -105,7 +106,7 @@ export default function Options(props) {
                 {propertiesShown === 'delete grade'
                     && <div >
                         {props.students.length > 0 ?
-                            <DeleteGrade
+                            <DeleteEditGrade
                                 students={props.students}
                                 currentUser={props.currentUser}
                                 refreshStudentData={props.refreshStudentData}

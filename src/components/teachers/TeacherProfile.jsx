@@ -1,19 +1,15 @@
 import { Button, Container } from 'react-bootstrap';
-import { UserAuth } from '../context/AuthContext.jsx';
+import { UserAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-
-
-import Options from './ui/Options.jsx';
+import Options from './Options';
 
 export default function TeacherProfile() {
-
     const { currentUser, logOut, getTeacherData, getAllStudents } = UserAuth();
 
     const navigate = useNavigate()
 
     const [teacher, setTeacher] = useState();
-
     const [students, setStudents] = useState([]);
 
     // ! refresh student data
@@ -46,7 +42,7 @@ export default function TeacherProfile() {
         }
     }, [currentUser?.email])
 
-    // ! for getting student data and there emails
+    // ! for getting students data 
     useEffect(() => {
         setRefreshLoading(true);
         getAllStudents()

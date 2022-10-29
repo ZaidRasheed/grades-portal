@@ -1,9 +1,8 @@
 import { Row, Col, Form, Button, Card, Alert, InputGroup } from 'react-bootstrap'
 import { useState, useRef } from 'react'
-import { UserAuth } from '../../context/AuthContext.jsx';
+import { UserAuth } from '../../../context/AuthContext';
 
 export default function AddGrade(props) {
-
     const emailRef = useRef()
     const gradeRef = useRef()
     const subjectRef = useRef()
@@ -16,10 +15,6 @@ export default function AddGrade(props) {
 
     const { addNewGrade } = UserAuth()
 
-    function capitalizeFirstLetter(string) {
-        return string.charAt(0).toUpperCase() + string.slice(1);
-    }
-
     const handleSubmit = (e) => {
 
         e.preventDefault()
@@ -27,65 +22,24 @@ export default function AddGrade(props) {
         setSuccess('')
         setLoading(true)
 
-        if (!gradeRef.current?.value.length) {
-            setLoading(false)
-            return setError('Grade name invalid, please provide a name.')
+        const grade = {
+            name: gradeRef.current?.value,
+            mark: markRef.current?.value,
+            total: totalRef.current?.value,
+            subject: subjectRef.current?.value
         }
 
-        if (emailRef.current?.value.length < 5) {
-            setLoading(false)
-            return setError('Email invalid.')
-        }
-
-        if (subjectRef.current?.value.length < 3) {
-            setLoading(false)
-            return setError('Grade subject is invalid, please provide a subject.')
-        }
-
-        if (markRef.current?.value < 0) {
-            setLoading(false)
-            return setError('Invalid, Marks cant be negative.')
-        }
-
-        if (totalRef.current?.value < 1) {
-            setLoading(false)
-            return setError('Invalid, Marks should be at least out of 1.')
-        }
-
-        if (parseInt(markRef.current?.value) > parseInt(totalRef.current?.value)) {
-            setLoading(false)
-            return setError('Invalid, Mark cant be greater than 100%.')
-        }
-        let flag = true
-        let id = null
-        for (let i = 0; i < props.students.length; i++) {
-            if (props.students[i].email === emailRef.current?.value.trim()) {
-                flag = false
-                id = props.students[i].id
-                break
-            }
-        }
-        if (flag) {
-            setLoading(false)
-            return setError('No student found.')
-        }
-
-        const mark = {
-            name: capitalizeFirstLetter(gradeRef.current?.value.trim()),
-            mark: +markRef.current?.value,
-            total: +totalRef.current?.value,
-            percentage: +((parseInt(markRef.current?.value) / parseInt(totalRef.current?.value) * 100).toFixed(2)),
-            subject: capitalizeFirstLetter(subjectRef.current?.value.trim())
-        }
-
-        addNewGrade(id, mark)
-            .then(() => {
-                setSuccess('Grade Added Successfully')
-                props.refreshStudentData()
+        addNewGrade(grade, emailRef?.current?.value, props.students)
+            .then((resp) => {
+                if (resp.status === 'success') {
+                    setSuccess(resp.message)
+                    props.refreshStudentData()
+                }
+                else
+                    setError(resp.message)
             })
             .catch((e) => {
                 setError("Grade Couldn't be added")
-                console.log(e)
             })
             .finally(() => {
                 setLoading(false);

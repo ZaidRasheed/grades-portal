@@ -2,8 +2,8 @@ import { useState, useRef } from 'react'
 import { UserAuth } from './context/AuthContext'
 import { Container, Form, Button, Card, Alert } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
-export default function ResetPassword() {
 
+export default function ResetPassword() {
     const emailRef = useRef()
 
     const [error, setError] = useState('')
@@ -12,13 +12,12 @@ export default function ResetPassword() {
 
     const { sendResetPasswordLink } = UserAuth();
 
-
     async function handleSubmit(event) {
-
         event.preventDefault();
         setLoading(true);
 
-        if (emailRef.current.value.length < 4) {
+        const regEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        if (!emailRef?.current.value || !regEmail.test(emailRef.current.value)) {
             setLoading(false);
             return setError('Invalid email')
         }

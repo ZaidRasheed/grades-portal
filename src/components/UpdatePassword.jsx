@@ -2,12 +2,16 @@ import { useRef, useState } from 'react'
 import { Form, Button, Alert, Modal } from 'react-bootstrap'
 import { UserAuth } from './context/AuthContext'
 import { Link } from 'react-router-dom'
+import { updatePassword } from 'firebase/auth';
 
 export default function UpdatePassword() {
-
     const [show, setShow] = useState(false);
-
-    const handleClose = () => setShow(false);
+    const handleClose = () => {
+        setError('');
+        setSuccess('');
+        setLoading(false);
+        setShow(false)
+    };
     const handleShow = () => setShow(true);
 
     const oldPassword = useRef()
@@ -19,55 +23,39 @@ export default function UpdatePassword() {
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false);
 
-    const { resetPassword, currentUser, createCredential, reAuth } = UserAuth();
-
+    const { resetPassword } = UserAuth();
 
     async function handleSubmit(event) {
-
         event.preventDefault();
+        setLoading(true)
 
         if (passwordRef.current.value !== passwordConfirmRef.current.value) {
-            return setError('Passwords do not match');
+            setLoading(false)
+            return setError('Passwords do not match.');
         }
 
         if (oldPassword.current.value === passwordRef.current.value) {
-            return setError("New password can't be same as old one!");
+            setLoading(false)
+            return setError("New password can't be the same as the old one.");
         }
-
-        try {
-            const credential = createCredential(currentUser.email, oldPassword.current.value);
-            await reAuth(currentUser, credential);
-            try {
-                setError('')
-                setLoading(true);
-                await resetPassword(passwordRef.current.value);
-                setSuccess("Password updated successfully")
-            }
-            catch (e2) {
-                switch (e2.code) {
-                    case 'auth/weak-password': {
-                        setError('Weak password')
-                        break;
-                    }
-                    default: {
-                        setError("An error occurred while updating new password")
-                    }
-                }
-                setLoading(false);
-            }
+        if (passwordRef.current.value.length < 6) {
+            setLoading(false)
+            return setError('Weak Password.');
         }
-        catch (e1) {
-            switch (e1.code) {
-                case 'auth/wrong-password': {
-                    setError('Wrong password please enter your current password')
-                    break;
+        resetPassword(oldPassword.current.value, passwordRef.current.value)
+            .then((res) => {
+                if (res.status === 'success') {
+                    setSuccess(res.message)
                 }
-                default: {
-                    setError("An error occurred while verifying current password")
+                else {
+                    setLoading(false)
+                    setError(res.message)
                 }
-            }
-            setLoading(false);
-        }
+            })
+            .catch(error => {
+                setLoading(false)
+                setError("Error, Couldn't Update password ")
+            })
     }
 
     return (

@@ -1,11 +1,9 @@
 import { useRef, useState } from 'react'
 import { Container, Form, Button, Card, Alert } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
-import { UserAuth } from '../context/AuthContext.jsx'
-
+import { UserAuth } from '../context/AuthContext'
 
 export default function Signup() {
-
     const firstNameRef = useRef()
     const lastNameRef = useRef()
     const emailRef = useRef()
@@ -15,73 +13,63 @@ export default function Signup() {
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false);
 
-    const { signUp, addStudent } = UserAuth();
+    const { createStudentAccount } = UserAuth();
 
     const navigate = useNavigate()
-
-    async function setUpUser() {
-        let fullName = firstNameRef.current.value.trim() + ` ${lastNameRef.current.value.trim()}`;
-        setError('')
-        setLoading(false);
-
-        signUp(emailRef.current.value.trim(), passwordRef.current.value.trim())
-            .then(async (userCredential) => {
-                try {
-                    const student = {
-                        id: userCredential.user.uid,
-                        email: emailRef.current.value.trim(),
-                        name: fullName,
-                        grades: [],
-                    }
-                    await addStudent(student, userCredential.user.uid)
-                    navigate('/student-profile')
-                }
-                catch (e) {
-                    setLoading(false);
-                }
-            })
-            .catch((error) => {
-                switch (error.code) {
-                    case 'auth/email-already-in-use': {
-                        setError('Email is already in use')
-                        break;
-                    }
-                    case 'auth/weak-password': {
-                        setError('Weak Password')
-                        break;
-                    }
-                    case 'cant update name try again': {
-                        setError('cant update name try again')
-                        break;
-                    }
-                    case 'auth/invalid-email': {
-                        setError('Invalid email')
-                        break;
-                    }
-                    default: {
-                        setError('Failed to create an account')
-                    }
-                        setLoading(false);
-                }
-            });
-    }
 
     function handleSubmit(event) {
 
         event.preventDefault();
-
-        if (passwordRef.current.value !== passwordConfirmRef.current.value) {
-            return setError('Passwords do not match');
-        }
+        setLoading(true)
 
         if (passwordRef.current.value.length < 6) {
-            return setError('Short Password');
+            setLoading(false)
+            return setError('Weak Password.');
+        }
+
+        if (passwordRef.current.value !== passwordConfirmRef.current.value) {
+            setLoading(false)
+            return setError('Passwords do not match.');
         }
 
         if (firstNameRef.current.value.length < 2 || lastNameRef.current.value.length < 2) {
-            return setError('Please provide first and last name');
+            setLoading(false)
+            return setError('Please provide valid first and last names.');
         }
-        setUpUser();
+
+        const regName = /^[a-zA-Z ]+$/;
+
+        if (!regName.test(firstNameRef.current.value.trim()) || !regName.test(lastNameRef.current.value.trim())) {
+            setLoading(false)
+            return setError('First and Last name can only contain alphabetical values.');
+        }
+
+        const regEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+        if (!regEmail.test(emailRef.current.value.trim())) {
+            setLoading(false)
+            return setError('Please provide a valid Email.');
+        }
+
+        let fullName = firstNameRef.current.value.trim() + ` ${lastNameRef.current.value.trim()}`;
+        const studentData = {
+            name: fullName,
+            email: emailRef.current.value.trim(),
+            password: passwordRef.current.value
+        }
+        createStudentAccount(studentData)
+            .then(resp => {
+                if (resp.status === 'success') {
+                    navigate('/student-profile')
+                }
+                else {
+                    setLoading(false);
+                    setError(resp.message)
+                }
+            }).catch(error => {
+                setLoading(false)
+                setError(error)
+            })
     }
 
     return (
