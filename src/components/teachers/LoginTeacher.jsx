@@ -34,8 +34,8 @@ export default function Login() {
             navigate('/teacher-profile')
         }
 
-        catch (e) {
-            switch (e.code) {
+        catch (error) {
+            switch (error.code) {
                 case 'auth/user-not-found': {
                     setError("A username with this email doesn't exist.")
                     break;
@@ -46,6 +46,10 @@ export default function Login() {
                 }
                 case 'auth/too-many-requests': {
                     setError('Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later.')
+                    break;
+                }
+                case 'auth/user-disabled': {
+                    setError('Account has been disabled.')
                     break;
                 }
                 default: {
