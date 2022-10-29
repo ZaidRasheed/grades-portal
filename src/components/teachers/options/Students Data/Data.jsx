@@ -167,6 +167,7 @@ export default function Data(props) {
         setEmail('')
         setEmail('')
         setError('')
+        setSubject('')
         setOption('All Grades')
         setData({
             name: '',
