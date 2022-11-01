@@ -66,6 +66,13 @@
         + A teacher can write and change students data.
         + A teacher can't delete students.
         + A teacher can't create new students
+## Demo accounts credentials:
+### - Student Account
+- Email: 12@12.com
+- Password: 12@12.com
+### - Teacher Account
+- Email: 123@123.com
+- Password: 123@123.com
 <br><br>
 ### - The following firestore rules ensure following in order:
 1. Admins can read their own data only.
