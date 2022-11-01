@@ -49,7 +49,7 @@ function App() {
             }
           />
         </Route>
-        <Route element={<ResetPassword />} path="/resetPassword" exact />
+        <Route element={<ResetPassword />} path="/reset-password" exact />
         <Route path="*" element={<Error />} />
       </Routes>
     </AuthContextProvider>

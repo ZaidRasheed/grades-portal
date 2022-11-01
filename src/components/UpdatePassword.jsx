@@ -93,7 +93,7 @@ export default function UpdatePassword() {
                         </Form>
                     </div>
                     <div className="w-100 text-center mt-2">
-                        Forgot password? <Link to='/resetPassword'>Reset</Link>
+                        Forgot password? <Link to='/reset-password'>Reset</Link>
                     </div>
                 </Modal.Body>
             </Modal>

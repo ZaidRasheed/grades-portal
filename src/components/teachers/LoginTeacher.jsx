@@ -102,7 +102,7 @@ export default function Login() {
                     </Card.Body>
                 </Card>
                 <div className="w-100 text-center mt-2">
-                    Forgot password? <Link to='/resetPassword'>Reset</Link>
+                    Forgot password? <Link to='/reset-password'>Reset</Link>
                 </div>
                 <div className="w-100 text-center mt-2">
                     Go back? <Link to='/'>Home</Link>
