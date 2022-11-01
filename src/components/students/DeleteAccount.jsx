@@ -32,12 +32,12 @@ export default function DeleteAccount() {
                     navigate('/')
                 }
                 else {
-                    setLoading(true)
-                    setError(error.message)
+                    setLoading(false)
+                    setError(res.message)
                 }
             })
             .catch(error => {
-                setLoading(true)
+                setLoading(false)
                 setError("Account couldn't be deleted.")
             })
     }
