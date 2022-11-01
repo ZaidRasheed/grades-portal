@@ -13,8 +13,8 @@
 3. Students can also delete their accounts. 
 
 - #### Teachers
-1. Teachers cannot create their accounts instead they are created manually, (an [admin panel](https://zaidrasheed.github.io/admin_panel/) was made for this purpose check it out [here](https://zaidrasheed.github.io/admin_panel/)).
-2. Teachers cannot delete their accounts (the same [admin panel](https://zaidrasheed.github.io/admin_panel/) does the job).
+1. Teachers cannot create their accounts instead they are created manually, (an [admin panel](https://github.com/ZaidRasheed/admin_panel) was made for this purpose check it out [here](https://github.com/ZaidRasheed/admin_panel)).
+2. Teachers cannot delete their accounts (the same [admin panel](https://github.com/ZaidRasheed/admin_panel) does the job).
 3. Teachers can also update their password if they are logged in or request a link to change if they are logged out.
 4. Teachers can view all students and their grades.
 5. Teachers can post, delete and edit grades for all students.
