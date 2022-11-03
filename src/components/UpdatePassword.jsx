@@ -2,7 +2,6 @@ import { useRef, useState } from 'react'
 import { Form, Button, Alert, Modal } from 'react-bootstrap'
 import { UserAuth } from './context/AuthContext'
 import { Link } from 'react-router-dom'
-import { updatePassword } from 'firebase/auth';
 
 export default function UpdatePassword() {
     const [show, setShow] = useState(false);

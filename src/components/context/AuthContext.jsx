@@ -147,7 +147,6 @@ export const AuthContextProvider = ({ children }) => {
                 return { status: 'success', message: 'Account successfully created.' }
             }
             catch (error) {
-                //! if the user could
                 userCredential.user.delete()
                 return { status: 'error', message: error.message }
             }
@@ -349,7 +348,6 @@ export const AuthContextProvider = ({ children }) => {
             sendResetPasswordLink,
             resetPassword,
             logOut,
-            createCredential,
 
             getAllStudents,
             getStudentData,
