@@ -17,22 +17,24 @@ export default function Data(props) {
 
 
     const findStudent = async () => {
-        for (let i = 0; i < props.students.length; i++) {
-            if (props.students[i].email.includes(email.trim())) {
-                if (subject.length) {
-                    let filteredGrades = props.students[i].grades.filter((grade) => {
-                        return grade.subject.toLowerCase().includes(subject.trim().toLowerCase())
-                    })
-                    return { student: props.students[i], grades: filteredGrades }
-                }
+        const index = props.students.findIndex(student => {
+            return student.email.includes(email.trim())
+        })
+        if (props.students[index]) {
+            if (subject.length) {
+                let filteredGrades = props.students[index].grades.filter((grade) => {
+                    return grade.subject.toLowerCase().includes(subject.trim().toLowerCase())
+                })
+                return { student: props.students[index], grades: filteredGrades }
+            }
 
-                return {
-                    student: props.students[i],
-                    grades: props.students[i].grades
-                }
+            return {
+                student: props.students[index],
+                grades: props.students[index].grades
             }
         }
-        return null
+        else
+            return null
     }
 
     function getHighestMark(grades) {
@@ -110,7 +112,7 @@ export default function Data(props) {
 
         findStudent()
             .then(data => {
-                if (data.student === null || data.student === undefined) {
+                if (!data) {
                     setLoading(false)
                     setResult([])
                     return setError('No student found.')

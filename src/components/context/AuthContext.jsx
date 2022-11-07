@@ -236,16 +236,16 @@ export const AuthContextProvider = ({ children }) => {
             return { status: 'error', message: 'Email invalid.' }
         }
 
-        let studentId = null
-        for (let i = 0; i < students.length; i++) {
-            if (students[i].email === email.trim()) {
-                studentId = students[i].id
-                break
-            }
-        }
-        if (!studentId) {
+
+        const index = students.findIndex(student => {
+            return student.email === email.trim()
+        })
+
+        if (!students[index]) {
             return { status: 'error', message: 'No student found.' }
         }
+
+        let studentId = students[index].id
 
         const regWholeNum = /^\d+$/
         const alphaNumeric = /^[\w\-\s]+$/

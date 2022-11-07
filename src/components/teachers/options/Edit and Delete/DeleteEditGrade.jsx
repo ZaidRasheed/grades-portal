@@ -49,15 +49,17 @@ export default function DeleteEditGrade(props) {
             setStudent(null)
             return setError('Email invalid.')
         }
-        var found = false;
-        for (let i = 0; i < props.students.length; i++) {
-            if (props.students[i].email === emailRef.current.value.trim()) {
-                found = true
-                if (!assignmentRef.current.value && !subjectRef.current.value) {
-                    setStudent(props.students[i])
-                    break;
-                }
-                let grades = props.students[i].grades
+
+        const index = props.students.findIndex(student => {
+            return student.email === emailRef.current.value.trim()
+        })
+
+        if (props.students[index]) {
+            if (!assignmentRef.current.value && !subjectRef.current.value) {
+                setStudent(props.students[index])
+            }
+            else {
+                let grades = props.students[index].grades
                 if (assignmentRef?.current?.value) {
                     grades = grades.filter(grade => {
                         return grade.name.toLowerCase().includes(assignmentRef.current.value.trim().toLowerCase())
@@ -73,23 +75,22 @@ export default function DeleteEditGrade(props) {
                     setError('No result found')
                 }
                 else {
-                    setError('')
                     setStudent({
-                        email: props.students[i].email,
-                        name: props.students[i].name,
+                        email: props.students[index].email,
+                        name: props.students[index].name,
                         grades: grades,
-                        id: props.students[i].id
+                        id: props.students[index].id
                     })
                 }
-                break;
             }
         }
-        if (!found) {
+        else {
             setStudent(null)
             setError('No student found.')
         }
         setLoading(false)
     }
+    
     useEffect(() => {
         if (emailRef?.current?.value)
             handleSearch()
