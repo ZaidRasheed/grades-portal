@@ -1,7 +1,7 @@
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import { Container, Form, Button, Card, Alert } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
-import { UserAuth } from '../context/AuthContext'
+import useSignUp from '../../hooks/useSignUp'
 
 export default function Signup() {
     const firstNameRef = useRef()
@@ -10,66 +10,22 @@ export default function Signup() {
     const passwordRef = useRef()
     const passwordConfirmRef = useRef()
 
-    const [error, setError] = useState('')
-    const [loading, setLoading] = useState(false);
-
-    const { createStudentAccount } = UserAuth();
-
+    const { error, loading, handleSignUp, status } = useSignUp()
     const navigate = useNavigate()
 
-    function handleSubmit(event) {
-
+    async function handleSubmit(event) {
         event.preventDefault();
-        setLoading(true)
 
-        if (passwordRef.current.value.length < 6) {
-            setLoading(false)
-            return setError('Weak Password.');
-        }
+        const email = emailRef.current.value.trim()
+        const password = passwordRef.current.value
+        const passwordConfirm = passwordConfirmRef.current.value
+        const firstName = firstNameRef.current.value.trim()
+        const lastName = lastNameRef.current.value.trim()
 
-        if (passwordRef.current.value !== passwordConfirmRef.current.value) {
-            setLoading(false)
-            return setError('Passwords do not match.');
-        }
+        console.table(password, passwordConfirm)
 
-        if (firstNameRef.current.value.length < 2 || lastNameRef.current.value.length < 2) {
-            setLoading(false)
-            return setError('Please provide valid first and last names.');
-        }
-
-        const regName = /^[a-zA-Z ]+$/;
-
-        if (!regName.test(firstNameRef.current.value.trim()) || !regName.test(lastNameRef.current.value.trim())) {
-            setLoading(false)
-            return setError('First and Last name can only contain alphabetical values.');
-        }
-
-        const regEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-
-        if (!regEmail.test(emailRef.current.value.trim())) {
-            setLoading(false)
-            return setError('Please provide a valid Email.');
-        }
-
-        let fullName = firstNameRef.current.value.trim() + ` ${lastNameRef.current.value.trim()}`;
-        const studentData = {
-            name: fullName,
-            email: emailRef.current.value.trim(),
-            password: passwordRef.current.value
-        }
-        createStudentAccount(studentData)
-            .then(res => {
-                if (res.status === 'success') {
-                    navigate('/student-profile')
-                }
-                else {
-                    setLoading(false);
-                    setError(res.message)
-                }
-            }).catch(error => {
-                setLoading(false)
-                setError(error)
-            })
+        await handleSignUp(email, password, passwordConfirm, firstName, lastName)
+        if (status === 'success') navigate('/student-profile')
     }
 
     return (

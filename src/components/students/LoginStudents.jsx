@@ -1,65 +1,23 @@
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import { Container, Form, Button, Card, Alert, InputGroup } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
-import { UserAuth } from '../context/AuthContext'
+import useLogin from '../../hooks/useLogin'
 
 export default function Login() {
     const emailRef = useRef()
     const passwordRef = useRef()
 
-    const [error, setError] = useState('')
-    const [loading, setLoading] = useState(false);
-
-    const { logIn } = UserAuth();
-
+    const { error, loading, handleLogin, status } = useLogin()
     const navigate = useNavigate()
 
     async function handleSubmit(event) {
-        event.preventDefault();
+        event.preventDefault()
 
-        setError('')
-        setLoading(true);
+        const email = emailRef.current.value.trim()
+        const password = passwordRef.current.value
 
-        if (passwordRef.current.value.length < 6) {
-            setLoading(false);
-            return setError('Please provide a valid Password.');
-        }
-        const regEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-
-        if (!regEmail.test(emailRef.current.value.trim())) {
-            setLoading(false);
-            return setError('Please provide a valid Email.');
-        }
-        try {
-            await logIn(emailRef.current.value.trim(), passwordRef.current.value.trim());
-            navigate('/student-profile')
-        }
-        catch (error) {
-            switch (error.code) {
-                case 'auth/user-not-found': {
-                    setError(`A username with this email doesn't exist, try signing up instead.`)
-                    break;
-                }
-                case 'auth/wrong-password': {
-                    setError('Wrong password please try again.')
-                    break;
-                }
-                case 'auth/too-many-requests': {
-                    setError('Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later.')
-                    break;
-                }
-                case 'auth/user-disabled': {
-                    setError('Account has been disabled.')
-                    break;
-                }
-                default: {
-                    setError('Failed to login.')
-                }
-            }
-            setLoading(false);
-        }
-
-
+        await handleLogin(email, password)
+        if (status === 'success') navigate('/student-profile')
     }
 
     return (
