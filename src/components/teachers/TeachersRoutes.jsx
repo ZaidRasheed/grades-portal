@@ -3,18 +3,21 @@ import { UserAuth } from '../context/AuthContext'
 import { Navigate } from 'react-router-dom'
 
 export default function AuthorizedTeacher({ children }) {
-    const { currentUser, checkIfTeacher } = UserAuth()
+    const { currentUser, checkIfTeacherOrStudent } = UserAuth()
     const [loading, setLoading] = useState(false);
     const [user, setUser] = useState('')
 
     useEffect(() => {
         if (currentUser?.uid)
-            checkIfTeacher(currentUser?.uid)
+            checkIfTeacherOrStudent(currentUser?.uid)
                 .then(res => {
-                    if (res)
-                        setUser('teacher')
-                    else
-                        setUser('student')
+                    if (res.state) {
+                        if (res.role === 'teacher')
+                            setUser('teacher')
+                    }
+                    else {
+                        logOut()
+                    }
                 })
                 .catch(e => {
 

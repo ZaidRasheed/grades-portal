@@ -86,29 +86,13 @@ export const AuthContextProvider = ({ children }) => {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user) {
-                try {
-                    const studentRef = doc(db, 'students', user?.uid);
-                    const studentSnap = await getDoc(studentRef);
-                    const teacherRef = doc(db, 'teachers', user?.uid);
-                    const teacherSnap = await getDoc(teacherRef);
-                    if (teacherSnap.exists() || studentSnap.exists()) {
-                        setCurrentUser(user)
-                    }
-                    else {
-                        signOut(auth);
-                    }
-                }
-                catch (error) {
-                    setCurrentUser(null)
-                }
-                finally {
-                    setLoading(false);
-                }
+                setCurrentUser(user)
             }
             else {
                 setCurrentUser(null)
-                setLoading(false);
             }
+
+            setLoading(false);
         });
         return () => {
             unsubscribe();
@@ -215,12 +199,17 @@ export const AuthContextProvider = ({ children }) => {
         })
     }
 
-    async function checkIfTeacher(id) {
+    async function checkIfTeacherOrStudent(id) {
         const teacherRef = doc(db, 'teachers', id);
+        const studentRef = doc(db, 'students', id);
         try {
             const teacher = await getDoc(teacherRef)
+            const student = await getDoc(studentRef)
             if (teacher.exists()) {
-                return true;
+                return { state: true, role: 'teacher' };
+            }
+            if (student.exists()) {
+                return { state: true, role: 'student' };
             }
             return false
         }
@@ -354,7 +343,7 @@ export const AuthContextProvider = ({ children }) => {
             getTeacherData,
             createStudentAccount,
             deleteAccount,
-            checkIfTeacher,
+            checkIfTeacherOrStudent,
             addNewGrade,
             deleteGrade,
             editGrade
