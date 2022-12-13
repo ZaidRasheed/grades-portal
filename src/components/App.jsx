@@ -3,15 +3,15 @@ import { AuthContextProvider } from "./context/AuthContext"
 import { lazy, Suspense } from 'react'
 import { Routes, Route } from 'react-router-dom'
 
-import Home from './Home'
-
-import PrivateRoutes from "./PrivateRoutes"
-import PublicRoutes from "./PublicRoutes"
-
-import TeacherRoutes from './teachers/TeachersRoutes'
-import StudentRoutes from './students/StudentsRoutes'
-
 import LoadingSpinner from './UI/LoadingSpinner'
+
+const Home = lazy(() => import('./Home'))
+
+const PrivateRoutes = lazy(() => import("./PrivateRoutes"))
+const PublicRoutes = lazy(() => import("./PublicRoutes"))
+
+const TeacherRoutes = lazy(() => import('./teachers/TeachersRoutes'))
+const StudentRoutes = lazy(() => import('./students/StudentsRoutes'))
 
 const ResetPassword = lazy(() => import("./ResetPassword"))
 const Error = lazy(() => import("./Error"))
