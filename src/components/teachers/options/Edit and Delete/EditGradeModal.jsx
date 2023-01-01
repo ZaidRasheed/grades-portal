@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Button, Form, Alert, Modal } from 'react-bootstrap'
-import { UserAuth } from '../../../context/AuthContext'
+import { UserAuth } from '../../../../context/AuthContext'
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -20,7 +20,8 @@ export default function EditGradeModal(props) {
     const handleEditGrade = async (e) => {
         e.preventDefault()
         setLoading(true)
-
+        setError('')
+        setSuccess('')
 
         if (!newMark) {
             setLoading(false)

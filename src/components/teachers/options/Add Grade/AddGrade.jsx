@@ -1,59 +1,29 @@
-import { Row, Col, Form, Button, Card, Alert, InputGroup } from 'react-bootstrap'
-import { useState, useRef } from 'react'
-import { UserAuth } from '../../../context/AuthContext';
+import useAddGrade from '../../../../hooks/Teacher Operations/useAddGrade';
+import { Row, Col, Form, Button, Card, InputGroup } from 'react-bootstrap'
 
 export default function AddGrade(props) {
-    const emailRef = useRef()
-    const gradeRef = useRef()
-    const subjectRef = useRef()
-    const markRef = useRef()
-    const totalRef = useRef()
 
-    const [error, setError] = useState('')
-    const [success, setSuccess] = useState('')
-    const [loading, setLoading] = useState(false);
+    const { students, refreshStudentData, refreshLoading } = props
 
-    const { addNewGrade } = UserAuth()
-
-    const handleSubmit = (e) => {
-
-        e.preventDefault()
-        setError('')
-        setSuccess('')
-        setLoading(true)
-
-        const grade = {
-            name: gradeRef.current?.value,
-            mark: markRef.current?.value,
-            total: totalRef.current?.value,
-            subject: subjectRef.current?.value
-        }
-
-        addNewGrade(grade, emailRef?.current?.value, props.students)
-            .then((res) => {
-                if (res.status === 'success') {
-                    setSuccess(res.message)
-                    props.refreshStudentData()
-                }
-                else
-                    setError(res.message)
-            })
-            .catch((e) => {
-                setError("Grade Couldn't be added")
-            })
-            .finally(() => {
-                setLoading(false);
-            })
-    }
-
+    const {
+        emailRef,
+        gradeRef,
+        subjectRef,
+        markRef,
+        totalRef,
+        loading,
+        handleAddGrade,
+        successAlert,
+        errorAlert
+    } = useAddGrade(students, refreshStudentData)
 
     return (
         <Card className='p-2 mb-3'>
             <Card.Body>
                 <h2 className='text-center mb-4'>Add Grade</h2>
-                {success && <Alert variant='success' onClose={() => setSuccess('')} dismissible>{success}</Alert>}
-                {error && <Alert variant='danger' onClose={() => setError('')} dismissible>{error}</Alert>}
-                <Form onSubmit={handleSubmit}>
+                {successAlert}
+                {errorAlert}
+                <Form onSubmit={handleAddGrade}>
                     <Form.Group className='mb-4 ' style={{ maxWidth: '900px' }}>
                         <Form.Label>Student Email*</Form.Label>
                         <InputGroup>
@@ -100,7 +70,7 @@ export default function AddGrade(props) {
                         </Col>
                     </Row>
                     <div className='text-center'>
-                        <Button style={{ maxWidth: '200px' }} disabled={loading || props.refreshLoading} className='w-100 mt-1 mb-1 text-center' type='submit'>Submit</Button>
+                        <Button style={{ maxWidth: '200px' }} disabled={loading || refreshLoading} className='w-100 mt-1 mb-1 text-center' type='submit'>Submit</Button>
                     </div>
                 </Form>
             </Card.Body>

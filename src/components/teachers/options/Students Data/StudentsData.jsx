@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Form, Button, Card, Alert, Dropdown, DropdownButton, InputGroup } from 'react-bootstrap'
 
-export default function Data(props) {
+export default function StudentsData(props) {
     const [email, setEmail] = useState('')
     const [subject, setSubject] = useState('')
     const [option, setOption] = useState('All Grades')

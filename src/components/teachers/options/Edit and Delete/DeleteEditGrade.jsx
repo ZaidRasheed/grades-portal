@@ -1,118 +1,43 @@
-import { Row, Col, Form, Button, Card, InputGroup, Alert } from 'react-bootstrap'
-import { useState, useRef, useEffect } from 'react'
+import useDeleteEditGrade from '../../../../hooks/Teacher Operations/useDeleteEditGrade'
+import { Row, Col, Form, Button, Card, InputGroup } from 'react-bootstrap'
 import DeleteGradeModal from './DeleteGradeModal'
 import EditGradeModal from './EditGradeModal'
 
 export default function DeleteEditGrade(props) {
-    const emailRef = useRef()
-    const assignmentRef = useRef()
-    const subjectRef = useRef()
-
-    const [error, setError] = useState('')
-    const [loading, setLoading] = useState(false)
-
-    const [student, setStudent] = useState(null)
-
-    const [showDeleteModal, setShowDeleteModal] = useState(false)
-    const [showEditModal, setShowEditModal] = useState(false)
-
-    const closeDeleteModal = () => {
-        setShowDeleteModal(false);
-    }
-    const closeEditModal = () => {
-        setShowEditModal(false)
-    };
-
-    const [deleteData, setDeleteData] = useState({})
-    const [editData, setEditData] = useState({})
-
-    const handleDeleteMark = (gradeName, subject) => {
-        setShowDeleteModal(true);
-        setDeleteData({
-            student: student,
-            gradeName: gradeName,
-            subject: subject
-        })
-    }
-    const handleEditGrade = (grade) => {
-        setEditData(grade)
-        setShowEditModal(true);
-    }
-
-    const handleSearch = (e) => {
-        e?.preventDefault()
-        setError('')
-        setLoading(true)
-
-        if (emailRef.current.value.length < 5) {
-            setLoading(false)
-            setStudent(null)
-            return setError('Email invalid.')
-        }
-
-        const index = props.students.findIndex(student => {
-            return student.email === emailRef.current.value.trim()
-        })
-
-        if (props.students[index]) {
-            if (!assignmentRef.current.value && !subjectRef.current.value) {
-                setStudent(props.students[index])
-            }
-            else {
-                let grades = props.students[index].grades
-                if (assignmentRef?.current?.value) {
-                    grades = grades.filter(grade => {
-                        return grade.name.toLowerCase().includes(assignmentRef.current.value.trim().toLowerCase())
-                    })
-                }
-                if (subjectRef?.current?.value) {
-                    grades = grades.filter(grade => {
-                        return grade.subject.toLowerCase().includes(subjectRef.current.value.trim().toLowerCase())
-                    })
-                }
-                if (!grades.length) {
-                    setStudent(null)
-                    setError('No result found')
-                }
-                else {
-                    setStudent({
-                        email: props.students[index].email,
-                        name: props.students[index].name,
-                        grades: grades,
-                        id: props.students[index].id
-                    })
-                }
-            }
-        }
-        else {
-            setStudent(null)
-            setError('No student found.')
-        }
-        setLoading(false)
-    }
-    
-    useEffect(() => {
-        if (emailRef?.current?.value)
-            handleSearch()
-    }, [props.refreshLoading]);
+    const { students, refreshLoading, refreshStudentData } = props
+    const { emailRef,
+        assignmentRef,
+        subjectRef,
+        errorAlert,
+        loading,
+        student,
+        showDeleteModal,
+        showEditModal,
+        closeDeleteModal,
+        closeEditModal,
+        deleteData,
+        editData,
+        handleDeleteMark,
+        handleEditGrade,
+        handleSearch, } = useDeleteEditGrade(students, refreshLoading)
 
     return (
         <>
             {showDeleteModal && <DeleteGradeModal
                 showDeleteModal={showDeleteModal}
                 closeDeleteModal={closeDeleteModal}
-                refreshStudentData={props.refreshStudentData}
+                refreshStudentData={refreshStudentData}
                 data={deleteData}
             />}
             {showEditModal && <EditGradeModal
                 showEditModal={showEditModal}
                 closeEditModal={closeEditModal}
-                refreshStudentData={props.refreshStudentData}
+                refreshStudentData={refreshStudentData}
                 oldGrade={editData}
                 student={student}
             />}
             <Card className='p-2 mb-3'>
-                {error && <Alert variant='danger' onClose={() => setError('')} dismissible>{error}</Alert>}
+                {errorAlert}
                 <Card.Body>
                     <h2 className='text-center mb-4'>Delete and Edit Grades</h2>
                     <Form onSubmit={handleSearch}>
@@ -159,7 +84,7 @@ export default function DeleteEditGrade(props) {
                         <div className='text-center'>
                             <Button
                                 style={{ maxWidth: '200px' }}
-                                disabled={loading || props.refreshLoading}
+                                disabled={loading || refreshLoading}
                                 className='w-100 mt-1 mb-1 text-center'
                                 type='submit'
                             >Search</Button>

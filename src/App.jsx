@@ -3,25 +3,25 @@ import { AuthContextProvider } from "./context/AuthContext"
 import { lazy, Suspense } from 'react'
 import { Routes, Route } from 'react-router-dom'
 
-import LoadingSpinner from './UI/LoadingSpinner'
+import LoadingSpinner from './components/UI/LoadingSpinner'
 
-const Home = lazy(() => import('./Home'))
+const Home = lazy(() => import('./pages/Home'))
 
-const PrivateRoutes = lazy(() => import("./PrivateRoutes"))
-const PublicRoutes = lazy(() => import("./PublicRoutes"))
+const PrivateRoutes = lazy(() => import("./routes/PrivateRoutes"))
+const PublicRoutes = lazy(() => import("./routes/PublicRoutes"))
 
-const TeacherRoutes = lazy(() => import('./teachers/TeachersRoutes'))
-const StudentRoutes = lazy(() => import('./students/StudentsRoutes'))
+const TeacherRoutes = lazy(() => import('./routes/TeachersRoutes'))
+const StudentRoutes = lazy(() => import('./routes/StudentsRoutes'))
 
-const ResetPassword = lazy(() => import("./ResetPassword"))
-const Error = lazy(() => import("./Error"))
+const ResetPassword = lazy(() => import("./pages/ResetPassword"))
+const Error = lazy(() => import("./pages/Error"))
 
-const Signup = lazy(() => import("./students/SignUp"))
-const LoginStudents = lazy(() => import("./students/LoginStudents"))
-const StudentProfile = lazy(() => import("./students/StudentProfile"))
+const Signup = lazy(() => import("./pages/SignUp"))
+const LoginStudents = lazy(() => import("./pages/LoginStudents"))
+const StudentProfile = lazy(() => import("./pages/StudentProfile"))
 
-const LoginTeacher = lazy(() => import('./teachers/LoginTeacher'))
-const TeacherProfile = lazy(() => import('./teachers/TeacherProfile'))
+const LoginTeacher = lazy(() => import('./pages/LoginTeacher'))
+const TeacherProfile = lazy(() => import('./pages/TeacherProfile'))
 
 
 

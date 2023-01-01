@@ -1,24 +1,9 @@
-import { useRef } from 'react'
 import { Container, Form, Button, Card, InputGroup } from 'react-bootstrap'
-import { Link, useNavigate } from 'react-router-dom'
-import useLogin from '../../hooks/useLogin'
+import { Link } from 'react-router-dom'
+import useLogin from '../hooks/useLogin'
 
 export default function Login() {
-    const emailRef = useRef()
-    const passwordRef = useRef()
-
-    const { alert, loading, handleLogin, status } = useLogin()
-    const navigate = useNavigate()
-
-    async function handleSubmit(event) {
-        event.preventDefault()
-
-        const email = emailRef.current.value.trim()
-        const password = passwordRef.current.value
-
-        await handleLogin(email, password)
-        if (status === 'success') navigate('/student-profile')
-    }
+    const { emailRef, passwordRef, alert, loading, handleLogin } = useLogin()
 
     return (
         <Container
@@ -30,7 +15,7 @@ export default function Login() {
                     <Card.Body>
                         <h2 className='text-center mb-4'>Student Login</h2>
                         {alert}
-                        <Form onSubmit={handleSubmit} >
+                        <Form onSubmit={handleLogin} >
                             <Form.Group className='mb-3' >
                                 <Form.Label>Email</Form.Label>
                                 <InputGroup>

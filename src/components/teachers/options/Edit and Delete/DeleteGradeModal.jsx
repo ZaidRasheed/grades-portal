@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Button, Alert, Modal } from 'react-bootstrap'
-import { UserAuth } from '../../../context/AuthContext'
+import { UserAuth } from '../../../../context/AuthContext'
 
 export default function DeleteGradeModal(props) {
     const [error, setError] = useState('')
@@ -10,6 +10,8 @@ export default function DeleteGradeModal(props) {
     const { deleteGrade } = UserAuth()
 
     const handleDeleteGrade = () => {
+        setError('')
+        setSuccess('')
         setLoading(true)
         deleteGrade(props.data.student.id, props.data.gradeName, props.data.subject)
             .then((res) => {
@@ -17,6 +19,7 @@ export default function DeleteGradeModal(props) {
                     setSuccess(res.message)
                 }
                 else {
+                    console.log(res)
                     setLoading(false)
                     setError(res.message)
                 }

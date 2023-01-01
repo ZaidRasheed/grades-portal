@@ -108,7 +108,7 @@ rules_version = '2';
       && (request.resource.data.id == resource.data.id)
       && (request.resource.data.email == resource.data.email)
       && (request.resource.data.name == resource.data.name)
-      && (request.resource.data.grades.size()== resource.data.grades.size() -1 ||
+      && (request.resource.data.grades.size() <= resource.data.grades.size()||
           (
             (request.resource.data.grades.size()== resource.data.grades.  size() +1) &&
               (

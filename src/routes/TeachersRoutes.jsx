@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react'
 import { UserAuth } from '../context/AuthContext'
 import { Navigate } from 'react-router-dom'
 
-export default function AuthorizedStudent({ children }) {
-    const { currentUser, checkIfTeacherOrStudent, logOut } = UserAuth()
-    const [loading, setLoading] = useState(false);
+export default function AuthorizedTeacher({ children }) {
+    const { currentUser, checkIfTeacherOrStudent } = UserAuth()
+    const [loading, setLoading] = useState(false)
     const [user, setUser] = useState('')
 
     useEffect(() => {
@@ -12,8 +12,8 @@ export default function AuthorizedStudent({ children }) {
             checkIfTeacherOrStudent(currentUser?.uid)
                 .then(res => {
                     if (res.state) {
-                        if (res.role === 'student')
-                            setUser('student')
+                        if (res.role === 'teacher')
+                            setUser('teacher')
                     }
                     else {
                         logOut()
@@ -23,14 +23,14 @@ export default function AuthorizedStudent({ children }) {
 
                 })
                 .finally(() => {
-                    setLoading(true);
+                    setLoading(true)
                 })
-    }, [currentUser?.uid]);
+    }, [currentUser?.uid])
 
     if (loading) {
-        if (user === 'student')
+        if (user === 'teacher')
             return children
-        return <Navigate to='/teacher-profile' />
+        return <Navigate to='/student-profile' />
     }
 
 }

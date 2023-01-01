@@ -1,37 +1,10 @@
-import { useState, useRef } from 'react'
-import { UserAuth } from './context/AuthContext'
+import useResetPassword from '../hooks/useResetPassword'
 import { Container, Form, Button, Card, Alert } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 export default function ResetPassword() {
-    const emailRef = useRef()
 
-    const [error, setError] = useState('')
-    const [loading, setLoading] = useState(false);
-    const [success, setSuccess] = useState('')
-
-    const { sendResetPasswordLink } = UserAuth();
-
-    async function handleSubmit(event) {
-        event.preventDefault();
-        setLoading(true);
-
-        const regEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-        if (!emailRef?.current.value || !regEmail.test(emailRef.current.value)) {
-            setLoading(false);
-            return setError('Invalid email')
-        }
-
-        try {
-            setError('')
-            await sendResetPasswordLink(emailRef.current.value);
-            setSuccess("Email sent please check inbox")
-        }
-        catch {
-            setLoading(false);
-            setError('Failed to send link')
-        }
-    }
+    const { emailRef, error, loading, success, handleSubmit, resetError, resetSuccess } = useResetPassword()
 
     return (
         <Container
@@ -42,8 +15,8 @@ export default function ResetPassword() {
                 <Card className='p-2'>
                     <Card.Body>
                         <h2 className='text-center mb-4'>Reset Password</h2>
-                        {error && <Alert variant='danger' onClose={() => setError('')} dismissible>{error}</Alert>}
-                        {success && <Alert variant='success' onClose={() => setSuccess('')} dismissible>{success}</Alert>}
+                        {error && <Alert variant='danger' onClose={resetError} dismissible>{error}</Alert>}
+                        {success && <Alert variant='success' onClose={resetSuccess} dismissible>{success}</Alert>}
                         <Form onSubmit={handleSubmit}>
                             <Form.Group className='mb-3'>
                                 <Form.Label>Email</Form.Label>

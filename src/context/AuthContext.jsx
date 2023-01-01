@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react"
 import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
@@ -8,7 +8,7 @@ import {
     updatePassword,
     EmailAuthProvider,
     reauthenticateWithCredential,
-} from "firebase/auth";
+} from "firebase/auth"
 
 import {
     collection, doc,
@@ -17,37 +17,37 @@ import {
     arrayUnion
 } from "firebase/firestore"
 
-import { auth, db } from "../../firebase";
+import { auth, db } from "./firebase"
 
-const UserContext = createContext();
+const UserContext = createContext()
 
 export const UserAuth = () => {
-    return useContext(UserContext);
+    return useContext(UserContext)
 }
 
 function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+    return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
 export const AuthContextProvider = ({ children }) => {
-    const [currentUser, setCurrentUser] = useState(null);
+    const [currentUser, setCurrentUser] = useState(null)
 
     const [loading, setLoading] = useState(true)
 
     const signUp = (email, password) => {
-        return createUserWithEmailAndPassword(auth, email, password);
+        return createUserWithEmailAndPassword(auth, email, password)
     }
 
     const logIn = (email, password) => {
-        return signInWithEmailAndPassword(auth, email, password);
+        return signInWithEmailAndPassword(auth, email, password)
     }
 
     const sendResetPasswordLink = (email) => {
-        return sendPasswordResetEmail(auth, email);
+        return sendPasswordResetEmail(auth, email)
     }
 
     const logOut = () => {
-        signOut(auth);
+        signOut(auth)
     }
 
     const createCredential = (email, password) => {
@@ -55,13 +55,13 @@ export const AuthContextProvider = ({ children }) => {
             email,
             password
         )
-        return credential;
+        return credential
     }
 
     const resetPassword = async (oldPassword, newPassword) => {
         try {
-            const credential = createCredential(currentUser.email, oldPassword);
-            await reauthenticateWithCredential(currentUser, credential);
+            const credential = createCredential(currentUser.email, oldPassword)
+            await reauthenticateWithCredential(currentUser, credential)
             await updatePassword(currentUser, newPassword)
             return { status: 'success', message: 'Password updated successfully.' }
         }
@@ -92,11 +92,11 @@ export const AuthContextProvider = ({ children }) => {
                 setCurrentUser(null)
             }
 
-            setLoading(false);
-        });
+            setLoading(false)
+        })
         return () => {
-            unsubscribe();
-        };
+            unsubscribe()
+        }
     }, [])
 
     function getAllStudents() {
@@ -126,7 +126,7 @@ export const AuthContextProvider = ({ children }) => {
                     name: studentData.name,
                     grades: [],
                 }
-                const studentRef = doc(db, 'students', userCredential.user.uid);
+                const studentRef = doc(db, 'students', userCredential.user.uid)
                 await setDoc(studentRef, student)
                 return { status: 'success', message: 'Account successfully created.' }
             }
@@ -154,12 +154,12 @@ export const AuthContextProvider = ({ children }) => {
     }
 
     function getStudentData(studentID) {
-        const docRef = doc(db, 'students', studentID);
+        const docRef = doc(db, 'students', studentID)
         return new Promise((resolve, reject) => {
             getDoc(docRef)
                 .then(student => {
                     if (student.exists)
-                        return resolve(student);
+                        return resolve(student)
 
                     return reject({ error: 'student is not found' })
                 })
@@ -171,25 +171,25 @@ export const AuthContextProvider = ({ children }) => {
 
     async function deleteAccount(password) {
         try {
-            const credential = createCredential(currentUser.email, password);
-            await reauthenticateWithCredential(currentUser, credential);
-            const studentDoc = doc(db, 'students', currentUser.uid);
+            const credential = createCredential(currentUser.email, password)
+            await reauthenticateWithCredential(currentUser, credential)
+            const studentDoc = doc(db, 'students', currentUser.uid)
             await deleteDoc(studentDoc)
-            currentUser.delete();
+            currentUser.delete()
             return { status: 'success', message: 'Account successfully deleted.' }
         }
         catch (error) {
-            return { status: 'error', message: error.message }
+            return { status: 'error', message: error.code }
         }
     }
 
     function getTeacherData(teachersId) {
-        const teacherRef = doc(db, 'teachers', teachersId);
+        const teacherRef = doc(db, 'teachers', teachersId)
         return new Promise((resolve, reject) => {
             getDoc(teacherRef)
                 .then(res => {
                     if (res.exists())
-                        return resolve(res.data());
+                        return resolve(res.data())
                     return reject({ error: `Teacher Doesn't exist` })
 
                 })
@@ -200,16 +200,16 @@ export const AuthContextProvider = ({ children }) => {
     }
 
     async function checkIfTeacherOrStudent(id) {
-        const teacherRef = doc(db, 'teachers', id);
-        const studentRef = doc(db, 'students', id);
+        const teacherRef = doc(db, 'teachers', id)
+        const studentRef = doc(db, 'students', id)
         try {
             const teacher = await getDoc(teacherRef)
             const student = await getDoc(studentRef)
             if (teacher.exists()) {
-                return { state: true, role: 'teacher' };
+                return { state: true, role: 'teacher' }
             }
             if (student.exists()) {
-                return { state: true, role: 'student' };
+                return { state: true, role: 'student' }
             }
             return false
         }
@@ -220,7 +220,7 @@ export const AuthContextProvider = ({ children }) => {
 
     async function addNewGrade(grade, email, students) {
 
-        const regEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        const regEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
         if (!email || !regEmail.test(email)) {
             return { status: 'error', message: 'Email invalid.' }
         }
@@ -275,7 +275,7 @@ export const AuthContextProvider = ({ children }) => {
             subject: capitalizeFirstLetter(grade.subject.trim())
         }
 
-        const studentRef = doc(db, 'students', studentId);
+        const studentRef = doc(db, 'students', studentId)
         try {
             await updateDoc(studentRef, { grades: arrayUnion(newGrade) })
             return { status: 'success', message: 'Mark successfully add' }
@@ -289,8 +289,8 @@ export const AuthContextProvider = ({ children }) => {
 
     async function deleteGrade(studentID, name, subject) {
         try {
-            const studentRef = doc(db, 'students', studentID);
-            const student = await getDoc(studentRef);
+            const studentRef = doc(db, 'students', studentID)
+            const student = await getDoc(studentRef)
             const grades = student.data().grades.filter(grade => {
                 return (grade.name !== name || grade.subject !== subject)
             })
@@ -298,21 +298,21 @@ export const AuthContextProvider = ({ children }) => {
                 await updateDoc(studentRef, { grades: grades })
                 // !extra check to see if anything was deleted
                 if (grades.length === student.data().grades.length)
-                    return { status: 'error', message: "Error in deleting grade due to wrong referencing." };
+                    return { status: 'error', message: "Error in deleting grade due to wrong referencing." }
                 else
                     return { status: 'success', message: `${subject} ${name} was deleted successfully` }
             }
             catch (error) {
-                return { status: 'error', message: error.message };
+                return { status: 'error', message: error.message }
             }
         }
         catch (error) {
-            return { status: 'error', message: error.message };
+            return { status: 'error', message: error.message }
         }
     }
 
     async function editGrade(studentID, gradeName, gradeSubject, updatedGrade) {
-        const docRef = doc(db, 'students', studentID);
+        const docRef = doc(db, 'students', studentID)
         try {
             const student = await getStudentData(studentID)
             const grades = student.data().grades.map(grade => {
@@ -326,11 +326,11 @@ export const AuthContextProvider = ({ children }) => {
                 return { status: 'success', message: `${gradeSubject} ${gradeName} was updated successfully` }
             }
             catch (error) {
-                return { status: 'error', message: error.message };
+                return { status: 'error', message: error.message }
             }
         }
         catch (error) {
-            return { status: 'error', message: error.message };
+            return { status: 'error', message: error.message }
         }
     }
 

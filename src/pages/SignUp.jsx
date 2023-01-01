@@ -1,32 +1,17 @@
-import { useRef } from 'react'
-import { Container, Form, Button, Card, Alert } from 'react-bootstrap'
-import { Link, useNavigate } from 'react-router-dom'
-import useSignUp from '../../hooks/useSignUp'
+import { Container, Form, Button, Card } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
+import useSignUp from '../hooks/useSignUp'
 
 export default function Signup() {
-    const firstNameRef = useRef()
-    const lastNameRef = useRef()
-    const emailRef = useRef()
-    const passwordRef = useRef()
-    const passwordConfirmRef = useRef()
-
-    const { error, loading, handleSignUp, status } = useSignUp()
-    const navigate = useNavigate()
-
-    async function handleSubmit(event) {
-        event.preventDefault();
-
-        const email = emailRef.current.value.trim()
-        const password = passwordRef.current.value
-        const passwordConfirm = passwordConfirmRef.current.value
-        const firstName = firstNameRef.current.value.trim()
-        const lastName = lastNameRef.current.value.trim()
-
-        console.table(password, passwordConfirm)
-
-        await handleSignUp(email, password, passwordConfirm, firstName, lastName)
-        if (status === 'success') navigate('/student-profile')
-    }
+    const {
+        firstNameRef,
+        lastNameRef,
+        emailRef,
+        passwordRef,
+        passwordConfirmRef,
+        alert,
+        loading,
+        handleSignUp } = useSignUp()
 
     return (
         <Container
@@ -37,8 +22,10 @@ export default function Signup() {
                 <Card className='p-2'>
                     <Card.Body>
                         <h2 className='text-center mb-4'>Sign Up</h2>
-                        {error && <Alert variant='danger' onClose={() => setError('')} dismissible>{error}</Alert>}
-                        <Form onSubmit={handleSubmit}>
+
+                        {alert}
+                        
+                        <Form onSubmit={handleSignUp}>
                             <Form.Group className='mb-3'>
                                 <Form.Label>First Name</Form.Label>
                                 <Form.Control type='name' ref={firstNameRef} autoComplete='username' required />

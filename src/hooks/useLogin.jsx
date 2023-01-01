@@ -1,53 +1,63 @@
-import { useState } from 'react'
-import { UserAuth } from '../components/context/AuthContext'
-import { Alert } from 'react-bootstrap';
-export default function useLogin() {
-    const [error, setError] = useState('')
-    const [loading, setLoading] = useState(false);
-    const [status, setStatus] = useState('')
-    const { logIn } = UserAuth();
+import { useState, useRef } from 'react'
+import { UserAuth } from '../context/AuthContext'
+import { useNavigate } from 'react-router-dom'
+import { Alert } from 'react-bootstrap'
 
-    async function handleLogin(email, password) {
+export default function useLogin() {
+    const emailRef = useRef()
+    const passwordRef = useRef()
+
+    const [error, setError] = useState('')
+    const [loading, setLoading] = useState(false)
+    const { logIn } = UserAuth()
+
+    const navigate = useNavigate()
+
+    async function handleLogin(event) {
+        event.preventDefault()
         setError('')
-        setLoading(true);
+        setLoading(true)
+
+        const email = emailRef.current.value.trim()
+        const password = passwordRef.current.value
 
         if (password < 6) {
-            setLoading(false);
-            return setError('Please provide a valid Password.');
+            setLoading(false)
+            return setError('Please provide a valid Password.')
         }
-        const regEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        const regEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 
         if (!regEmail.test(email.trim())) {
-            setLoading(false);
-            return setError('Please provide a valid Email.');
+            setLoading(false)
+            return setError('Please provide a valid Email.')
         }
         try {
-            await logIn(email.trim(), password.trim());
-            setStatus('success')
+            await logIn(email.trim(), password.trim())
+            navigate('/student-profile')
         }
         catch (error) {
             switch (error.code) {
                 case 'auth/user-not-found': {
                     setError(`A username with this email doesn't exist, try signing up instead.`)
-                    break;
+                    break
                 }
                 case 'auth/wrong-password': {
                     setError('Wrong password please try again.')
-                    break;
+                    break
                 }
                 case 'auth/too-many-requests': {
                     setError('Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later.')
-                    break;
+                    break
                 }
                 case 'auth/user-disabled': {
                     setError('Account has been disabled.')
-                    break;
+                    break
                 }
                 default: {
                     setError('Failed to login.')
                 }
             }
-            setLoading(false);
+            setLoading(false)
         }
     }
 
@@ -58,10 +68,11 @@ export default function useLogin() {
 
 
     return {
+        emailRef,
+        passwordRef,
         error,
         loading,
         handleLogin,
-        status,
         alert
     }
 }
