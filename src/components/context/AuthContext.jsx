@@ -246,15 +246,20 @@ export const AuthContextProvider = ({ children }) => {
         if (!grade.subject || !alphaNumeric.test(grade.subject)) {
             return { status: 'error', message: 'Grade subject is invalid, please provide a subject.' }
         }
+
+        if (!grade.mark || !grade.total) {
+            return { status: 'error', message: 'Invalid, Please provide a valid mark.' }
+        }
+
         if (!regWholeNum.test(grade.mark) || !regWholeNum.test(grade.total)) {
+            return { status: 'error', message: 'Invalid, marks should be numbers.' }
+        }
+
+        if (grade.mark < 0) {
             return { status: 'error', message: 'Invalid, Marks cant be negative.' }
         }
 
-        if (!grade.mark || grade.mark < 0) {
-            return { status: 'error', message: 'Invalid, Marks cant be negative.' }
-        }
-
-        if (!grade.total || grade.total < 1) {
+        if (grade.total < 1) {
             return { status: 'error', message: 'Invalid, Marks should be at least out of 1.' }
         }
 

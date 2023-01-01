@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { Container, Form, Button, Card, Alert, InputGroup } from 'react-bootstrap'
+import { Container, Form, Button, Card, InputGroup } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import useLogin from '../../hooks/useLogin'
 
@@ -7,7 +7,7 @@ export default function Login() {
     const emailRef = useRef()
     const passwordRef = useRef()
 
-    const { error, loading, handleLogin, status } = useLogin()
+    const { alert, loading, handleLogin, status } = useLogin()
     const navigate = useNavigate()
 
     async function handleSubmit(event) {
@@ -29,7 +29,7 @@ export default function Login() {
                 <Card className='p-2'>
                     <Card.Body>
                         <h2 className='text-center mb-4'>Student Login</h2>
-                        {error && <Alert variant='danger' onClose={() => setError('')} dismissible>{error}</Alert>}
+                        {alert}
                         <Form onSubmit={handleSubmit} >
                             <Form.Group className='mb-3' >
                                 <Form.Label>Email</Form.Label>

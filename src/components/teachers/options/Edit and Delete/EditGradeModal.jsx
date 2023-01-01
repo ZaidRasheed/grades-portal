@@ -22,7 +22,12 @@ export default function EditGradeModal(props) {
         setLoading(true)
 
 
-        if (!newMark || +newMark < 0) {
+        if (!newMark) {
+            setLoading(false)
+            return setError('Please provide a valid mark.')
+        }
+
+        if (+newMark < 0) {
             setLoading(false)
             return setError('Invalid, Marks cant be negative.')
         }

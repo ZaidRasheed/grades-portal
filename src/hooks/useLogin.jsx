@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { UserAuth } from '../components/context/AuthContext'
-
+import { Alert } from 'react-bootstrap';
 export default function useLogin() {
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false);
@@ -51,10 +51,17 @@ export default function useLogin() {
         }
     }
 
+    const alert = <>
+        {error && <Alert variant='danger' onClose={() => setError('')} dismissible>{error}</Alert>}
+    </>
+
+
+
     return {
         error,
         loading,
         handleLogin,
-        status
+        status,
+        alert
     }
 }

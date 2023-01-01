@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Button, Alert, Modal } from 'react-bootstrap'
 import { UserAuth } from '../../../context/AuthContext'
 
-export default function DeleteStudentModal(props) {
+export default function DeleteGradeModal(props) {
     const [error, setError] = useState('')
     const [success, setSuccess] = useState('')
     const [loading, setLoading] = useState(false)

@@ -1,6 +1,6 @@
 import { Row, Col, Form, Button, Card, InputGroup, Alert } from 'react-bootstrap'
 import { useState, useRef, useEffect } from 'react'
-import DeleteStudentModal from './DeleteStudentModal'
+import DeleteGradeModal from './DeleteGradeModal'
 import EditGradeModal from './EditGradeModal'
 
 export default function DeleteEditGrade(props) {
@@ -98,7 +98,7 @@ export default function DeleteEditGrade(props) {
 
     return (
         <>
-            {showDeleteModal && <DeleteStudentModal
+            {showDeleteModal && <DeleteGradeModal
                 showDeleteModal={showDeleteModal}
                 closeDeleteModal={closeDeleteModal}
                 refreshStudentData={props.refreshStudentData}
