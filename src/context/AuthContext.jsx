@@ -5,7 +5,7 @@ import {
     onAuthStateChanged,
     sendPasswordResetEmail,
     signOut,
-    updatePassword,
+    updatePassword as passwordUpdate,
     EmailAuthProvider,
     reauthenticateWithCredential,
 } from "firebase/auth"
@@ -58,11 +58,11 @@ export const AuthContextProvider = ({ children }) => {
         return credential
     }
 
-    const resetPassword = async (oldPassword, newPassword) => {
+    const updatePassword = async (oldPassword, newPassword) => {
         try {
             const credential = createCredential(currentUser.email, oldPassword)
             await reauthenticateWithCredential(currentUser, credential)
-            await updatePassword(currentUser, newPassword)
+            await passwordUpdate(currentUser, newPassword)
             return { status: 'success', message: 'Password updated successfully.' }
         }
         catch (error) {
@@ -340,7 +340,7 @@ export const AuthContextProvider = ({ children }) => {
             signUp,
             logIn,
             sendResetPasswordLink,
-            resetPassword,
+            updatePassword,
             logOut,
 
             getAllStudents,

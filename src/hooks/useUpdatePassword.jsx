@@ -13,7 +13,7 @@ export default function useUpdatePassword() {
     const [loading, setLoading] = useState(false)
     const [show, setShow] = useState(false)
 
-    const { resetPassword } = UserAuth()
+    const { updatePassword } = UserAuth()
 
     const handleCloseModal = () => {
         setSuccess('')
@@ -42,7 +42,7 @@ export default function useUpdatePassword() {
             setLoading(false)
             return setError('Weak Password.')
         }
-        resetPassword(oldPasswordRef.current.value, newPasswordRef.current.value)
+        updatePassword(oldPasswordRef.current.value, newPasswordRef.current.value)
             .then((res) => {
                 if (res.status === 'success') {
                     setSuccess(res.message)
