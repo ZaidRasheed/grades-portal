@@ -3,7 +3,7 @@ import { UserAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import { Alert } from 'react-bootstrap'
 
-export default function useLogin() {
+export default function useLogin(role) {
     const emailRef = useRef()
     const passwordRef = useRef()
 
@@ -33,7 +33,7 @@ export default function useLogin() {
         }
         try {
             await logIn(email.trim(), password.trim())
-            navigate('/student-profile')
+            role === 'student' ? navigate('/student-profile') : navigate('/teacher-profile')
         }
         catch (error) {
             switch (error.code) {

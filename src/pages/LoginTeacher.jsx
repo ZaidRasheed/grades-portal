@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import useLogin from '../hooks/useLogin'
 
 export default function Login() {
-    const { emailRef, passwordRef, alert, loading, handleLogin } = useLogin()
+    const { emailRef, passwordRef, alert, loading, handleLogin } = useLogin('teacher')
 
     return (
         <Container

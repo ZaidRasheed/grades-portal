@@ -14,13 +14,19 @@ export default function StudentProfile() {
         handleLogOut,
         setOption } = useStudent()
 
+    let gradeCount = 1
+
     return (
         <Container
-            className="d-flex align-items-center justify-content-center"
+            className="d-flex justify-content-center mt-4"
             style={{ minHeight: "100vh" }}
         >
             <div className="w-100" style={{ maxWidth: "900px" }}>
-                {student?.name ? <h1 className=' mb-4'>Hello {student?.name} !</h1> : null}
+                <div class="d-flex justify-content-between">
+                    {student?.name ? <h1 className=' mb-4'>Hello {student?.name} !</h1> : null}
+                    <Button variant="outline-primary" className='text-center mb-4 btn-lg' onClick={handleLogOut}>Log out</Button>
+                </div>
+
                 <h4 className=' mb-4'>Email: {student?.email}</h4>
                 <Button
                     variant='outline-primary'
@@ -61,10 +67,10 @@ export default function StudentProfile() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {grades.map((grade, i) => {
+                                {grades.map((grade) => {
                                     return (grade.subject === option || option === 'All Grades') ? (
-                                        <tr key={i}>
-                                            <th scope="row">{i + 1}</th>
+                                        <tr key={gradeCount}>
+                                            <th scope="row">{gradeCount++}</th>
                                             <th scope="row">{grade.subject}</th>
                                             <td>{grade.name}</td>
                                             <td className='text-center'>{grade.mark}/{grade.total}</td>
@@ -80,10 +86,6 @@ export default function StudentProfile() {
 
                 <UpdatePassword />
                 <DeleteAccount />
-                <div className="w-100 mt-3">
-                    <Button variant="outline-primary" className='text-center mb-4 btn-lg mt-3' onClick={handleLogOut}>Log out</Button>
-                </div>
-
             </div>
         </Container>
     )
