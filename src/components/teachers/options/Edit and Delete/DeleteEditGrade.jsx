@@ -121,16 +121,16 @@ export default function DeleteEditGrade(props) {
                                                         variant="outline-success"
                                                         className='btn'
                                                         onClick={() => {
-                                                            handleEditGrade(grade);
+                                                            handleEditGrade(grade)
                                                         }}
                                                     >Edit</Button></th>
                                                     <th className='text-center'><Button
                                                         variant="outline-danger"
                                                         className='btn'
                                                         onClick={() => {
-                                                            handleDeleteMark(grade.name, grade.subject);
+                                                            handleDeleteMark(grade.name, grade.subject)
                                                         }}
-                                                    >Delete &times;</Button></th>
+                                                    >Delete &times</Button></th>
                                                 </tr>
                                             )
                                         })}

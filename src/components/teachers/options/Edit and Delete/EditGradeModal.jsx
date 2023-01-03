@@ -3,7 +3,7 @@ import { Button, Form, Alert, Modal } from 'react-bootstrap'
 import { UserAuth } from '../../../../context/AuthContext'
 
 function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+    return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
 export default function EditGradeModal(props) {
@@ -11,7 +11,7 @@ export default function EditGradeModal(props) {
     const [newMark, setNewMark] = useState(props.oldGrade.mark)
     const [newTotal, setNewTotal] = useState(props.oldGrade.total)
 
-    const { editGrade } = UserAuth();
+    const { editGrade } = UserAuth()
 
     const [error, setError] = useState('')
     const [success, setSuccess] = useState('')
@@ -60,7 +60,7 @@ export default function EditGradeModal(props) {
             .then((res) => {
                 if (res.status === 'success') {
                     setSuccess(res.message)
-                    props.refreshStudentData();
+                    props.refreshStudentData()
                 }
                 else {
                     setLoading(false)

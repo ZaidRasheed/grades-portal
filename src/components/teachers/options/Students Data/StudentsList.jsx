@@ -6,7 +6,7 @@ export default function StudentsList(props) {
     const [name, setName] = useState('')
 
     const [error, setError] = useState('')
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false)
 
     const students = useMemo(() => {
         return props.students.filter(student => {
@@ -29,7 +29,7 @@ export default function StudentsList(props) {
             return setError('No student found.')
         }
 
-        setLoading(false);
+        setLoading(false)
     }
 
     return (

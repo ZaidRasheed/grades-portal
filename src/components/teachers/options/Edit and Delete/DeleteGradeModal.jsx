@@ -29,7 +29,7 @@ export default function DeleteGradeModal(props) {
                 setError(`Error, Couldn't Delete Grade ${subject} ${gradeName} `)
             })
             .finally(() => {
-                props.refreshStudentData();
+                props.refreshStudentData()
             })
     }
 

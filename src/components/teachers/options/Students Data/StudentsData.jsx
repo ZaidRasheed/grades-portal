@@ -13,7 +13,7 @@ export default function StudentsData(props) {
     })
 
     const [error, setError] = useState('')
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false)
 
 
     const findStudent = async () => {
@@ -138,30 +138,30 @@ export default function StudentsData(props) {
                 switch (option) {
                     case 'Highest Grade': {
                         getHighestMark(data.grades)
-                        break;
+                        break
                     }
                     case 'Lowest Grade': {
                         getLowestMark(data.grades)
-                        break;
+                        break
                     }
                     case 'Passed Grades': {
                         allPassed(data.grades)
-                        break;
+                        break
                     }
                     case 'Failed Grades': {
                         allFailed(data.grades)
-                        break;
+                        break
                     }
                     case 'All Grades': {
                         setResult(data.grades)
-                        break;
+                        break
                     }
                     default: {
                         setError('Invalid selection please select the type of search query')
-                        break;
+                        break
                     }
                 }
-                setLoading(false);
+                setLoading(false)
             })
     }
 

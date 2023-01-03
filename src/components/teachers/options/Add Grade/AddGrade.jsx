@@ -1,4 +1,4 @@
-import useAddGrade from '../../../../hooks/Teacher Operations/useAddGrade';
+import useAddGrade from '../../../../hooks/Teacher Operations/useAddGrade'
 import { Row, Col, Form, Button, Card, InputGroup } from 'react-bootstrap'
 
 export default function AddGrade(props) {

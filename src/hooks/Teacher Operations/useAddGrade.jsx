@@ -11,7 +11,7 @@ export default function useAddGrade(students, refreshStudentData) {
 
     const [error, setError] = useState('')
     const [success, setSuccess] = useState('')
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false)
 
     const { addNewGrade } = UserAuth()
 
@@ -42,7 +42,7 @@ export default function useAddGrade(students, refreshStudentData) {
                 setError("Grade Couldn't be added")
             })
             .finally(() => {
-                setLoading(false);
+                setLoading(false)
             })
     }
 

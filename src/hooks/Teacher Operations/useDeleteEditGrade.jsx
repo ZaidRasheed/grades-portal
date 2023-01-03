@@ -14,17 +14,17 @@ export default function useDeleteEditGrade(students, refreshLoading) {
     const [showEditModal, setShowEditModal] = useState(false)
 
     const closeDeleteModal = () => {
-        setShowDeleteModal(false);
+        setShowDeleteModal(false)
     }
     const closeEditModal = () => {
         setShowEditModal(false)
-    };
+    }
 
     const [deleteData, setDeleteData] = useState({})
     const [editData, setEditData] = useState({})
 
     const handleDeleteMark = (gradeName, subject) => {
-        setShowDeleteModal(true);
+        setShowDeleteModal(true)
         setDeleteData({
             student: student,
             gradeName: gradeName,
@@ -33,7 +33,7 @@ export default function useDeleteEditGrade(students, refreshLoading) {
     }
     const handleEditGrade = (grade) => {
         setEditData(grade)
-        setShowEditModal(true);
+        setShowEditModal(true)
     }
 
     const handleSearch = (e) => {
@@ -91,7 +91,7 @@ export default function useDeleteEditGrade(students, refreshLoading) {
     useEffect(() => {
         if (emailRef?.current?.value)
             handleSearch()
-    }, [refreshLoading]);
+    }, [refreshLoading])
 
     const ErrorAlert = <>
         {error && <Alert variant='danger' onClose={() => setError('')} dismissible>{error}</Alert>}

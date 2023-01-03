@@ -1,14 +1,14 @@
-import { useState } from 'react';
-import { Button } from 'react-bootstrap';
-import AddGrade from './options/Add Grade/AddGrade';
-import StudentsList from './options/Students Data/StudentsList';
-import Data from './options/Students Data/StudentsData';
-import DeleteEditGrade from './options/Edit and Delete/DeleteEditGrade';
-import Profile from './options/Profile';
+import { useState } from 'react'
+import { Button } from 'react-bootstrap'
+import AddGrade from './options/Add Grade/AddGrade'
+import StudentsList from './options/Students Data/StudentsList'
+import Data from './options/Students Data/StudentsData'
+import DeleteEditGrade from './options/Edit and Delete/DeleteEditGrade'
+import Profile from './options/Profile'
 
 export default function Options(props) {
     const [propertiesShown, setPropertiesShown] = useState('add grade')
-    
+
     return (
         <>
             <ul className="nav nav-pills mb-3 mt-5" id="pills-tab" role="tablist">
