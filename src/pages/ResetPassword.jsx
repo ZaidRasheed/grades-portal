@@ -1,10 +1,12 @@
 import useResetPassword from '../hooks/useResetPassword'
 import { Container, Form, Button, Card, Alert } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 export default function ResetPassword() {
 
     const { emailRef, error, loading, success, handleSubmit, resetError, resetSuccess } = useResetPassword()
+
+    const navigate = useNavigate()
 
     return (
         <Container
@@ -27,9 +29,7 @@ export default function ResetPassword() {
                         </Form>
                     </Card.Body>
                 </Card>
-                <div className="w-100 text-center mt-2">
-                    <Link to='/'>Go back?</Link>
-                </div>
+                <p role="button" className="w-100 text-center mt-2 link-primary " onClick={() => navigate(-1)}><u>Go back?</u></p>
             </div>
         </Container>
     )
