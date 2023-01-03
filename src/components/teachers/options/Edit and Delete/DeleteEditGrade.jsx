@@ -8,7 +8,7 @@ export default function DeleteEditGrade(props) {
     const { emailRef,
         assignmentRef,
         subjectRef,
-        errorAlert,
+        ErrorAlert,
         loading,
         student,
         showDeleteModal,
@@ -37,7 +37,7 @@ export default function DeleteEditGrade(props) {
                 student={student}
             />}
             <Card className='p-2 mb-3'>
-                {errorAlert}
+                {ErrorAlert}
                 <Card.Body>
                     <h2 className='text-center mb-4'>Delete and Edit Grades</h2>
                     <Form onSubmit={handleSearch}>

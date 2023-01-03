@@ -58,11 +58,11 @@ export default function useUpdatePassword() {
             })
     }
 
-    const successAlert = <>
+    const SuccessAlert = <>
         {success && <Alert variant='success' onClose={() => setSuccess('')} dismissible>{success}</Alert>}
     </>
 
-    const errorAlert = <>
+    const ErrorAlert = <>
         {error && <Alert variant='danger' onClose={() => setError('')} dismissible>{error}</Alert>}
     </>
 
@@ -70,8 +70,8 @@ export default function useUpdatePassword() {
         oldPasswordRef,
         newPasswordRef,
         passwordConfirmRef,
-        successAlert,
-        errorAlert,
+        SuccessAlert,
+        ErrorAlert,
         loading,
         show,
         handleShowModal,

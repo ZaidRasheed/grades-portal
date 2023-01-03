@@ -93,7 +93,7 @@ export default function useDeleteEditGrade(students, refreshLoading) {
             handleSearch()
     }, [refreshLoading]);
 
-    const errorAlert = <>
+    const ErrorAlert = <>
         {error && <Alert variant='danger' onClose={() => setError('')} dismissible>{error}</Alert>}
     </>
 
@@ -101,7 +101,7 @@ export default function useDeleteEditGrade(students, refreshLoading) {
         emailRef,
         assignmentRef,
         subjectRef,
-        errorAlert,
+        ErrorAlert,
         loading,
         student,
         showDeleteModal,

@@ -8,8 +8,8 @@ export default function UpdatePassword() {
         oldPasswordRef,
         newPasswordRef,
         passwordConfirmRef,
-        successAlert,
-        errorAlert,
+        SuccessAlert,
+        ErrorAlert,
         loading,
         show,
         handleShowModal,
@@ -30,8 +30,8 @@ export default function UpdatePassword() {
                 <Modal.Body>
                     <div className="w-100">
 
-                        {errorAlert}
-                        {successAlert}
+                        {ErrorAlert}
+                        {SuccessAlert}
 
                         <Form onSubmit={handleUpdatePassword}>
                             <Form.Group className='mb-3'>

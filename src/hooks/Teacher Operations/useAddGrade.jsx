@@ -46,10 +46,10 @@ export default function useAddGrade(students, refreshStudentData) {
             })
     }
 
-    const successAlert = <>
+    const SuccessAlert = <>
         {success && <Alert variant='success' onClose={() => setSuccess('')} dismissible>{success}</Alert>}
     </>
-    const errorAlert = <>
+    const ErrorAlert = <>
         {error && <Alert variant='danger' onClose={() => setError('')} dismissible>{error}</Alert>}
     </>
 
@@ -61,7 +61,7 @@ export default function useAddGrade(students, refreshStudentData) {
         totalRef,
         loading,
         handleAddGrade,
-        successAlert,
-        errorAlert
+        SuccessAlert,
+        ErrorAlert
     }
 }

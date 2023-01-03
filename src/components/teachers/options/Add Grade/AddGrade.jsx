@@ -13,16 +13,16 @@ export default function AddGrade(props) {
         totalRef,
         loading,
         handleAddGrade,
-        successAlert,
-        errorAlert
+        SuccessAlert,
+        ErrorAlert
     } = useAddGrade(students, refreshStudentData)
 
     return (
         <Card className='p-2 mb-3'>
             <Card.Body>
                 <h2 className='text-center mb-4'>Add Grade</h2>
-                {successAlert}
-                {errorAlert}
+                {SuccessAlert}
+                {ErrorAlert}
                 <Form onSubmit={handleAddGrade}>
                     <Form.Group className='mb-4 ' style={{ maxWidth: '900px' }}>
                         <Form.Label>Student Email*</Form.Label>
