@@ -158,7 +158,7 @@ export const AuthContextProvider = ({ children }) => {
         return new Promise((resolve, reject) => {
             getDoc(docRef)
                 .then(student => {
-                    if (student.exists)
+                    if (student.exists())
                         return resolve(student)
 
                     return reject({ error: 'student is not found' })
