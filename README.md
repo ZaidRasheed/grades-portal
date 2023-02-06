@@ -123,7 +123,7 @@ rules_version = '2';
                 && (request.resource.data.grades[request.resource.data. grades.size()-1].percentage <=100)
                 && (request.resource.data.grades[request.resource.data. grades.size()-1].total >0)
                 && (request.resource.data.grades[request.resource.data. grades.size()-1].mark >=0)
-                && (request.resource.data.grades[request.resource.data. grades.size()-1].mark <= request.resource.data.grades  [request.resource.data.grades.size()-1].total)
+                && (request.resource.data.grades[request.resource.data. grades.size()-1].mark <= request.resource.data.grades[request.resource.data.grades.size()-1].total)
               )
             )
          );
